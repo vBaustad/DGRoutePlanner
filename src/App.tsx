@@ -19,7 +19,11 @@ export default function App() {
       </header>
 
       {/* Main Content with space for ads */}
+<<<<<<< HEAD
       <main className="container mx-auto px-4 py-4">
+=======
+      <main className="container mx-auto px-4 py-8">
+>>>>>>> 6e50f4ef4c33e0022ff226ca196761776a79f2cc
         <div className="mx-auto max-w-4xl">
           <RoutePlanner />
         </div>
