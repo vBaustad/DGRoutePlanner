@@ -52,7 +52,7 @@ export function HelpSection() {
   ]
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
       <div className="mb-4">
         <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
           <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
