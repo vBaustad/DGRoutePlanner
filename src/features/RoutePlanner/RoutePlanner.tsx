@@ -5,19 +5,17 @@ import { HelpSection } from "./HelpSection"
 export function RoutePlanner() {
   return (
     <div className="space-y-8">
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Main Form - Takes up 2 columns on large screens */}
-        <div className="lg:col-span-2">
+      <div className="grid gap-4 items-stretch lg:grid-cols-3">
+        
+        <div className="lg:col-span-2 h-full">
           <PlannerForm />
         </div>
 
-        {/* Help Section - Takes up 1 column on large screens */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 h-full">
           <HelpSection />
         </div>
       </div>
 
-      {/* Map Preview - Full width */}
       <MapPreview />
     </div>
   )
