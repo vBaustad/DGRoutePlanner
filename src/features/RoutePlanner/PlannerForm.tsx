@@ -88,6 +88,9 @@ export function PlannerForm() {
 
   return (
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b59bce8 (Planner form implementation (#20))
   <form onSubmit={handleSubmit} className="card bg-base-100 shadow p-6 space-y-6 min-h-[500px] flex flex-col">
     <h2 className="text-xl font-bold flex items-center gap-2">
       <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,6 +113,7 @@ export function PlannerForm() {
           placeholder="Enter a starting location"
         />
         <button type="button" onClick={handleStepAdd} className="btn btn-primary mt-4 w-full">Add Start</button>
+<<<<<<< HEAD
 =======
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
       <div className="mb-6">
@@ -123,6 +127,8 @@ export function PlannerForm() {
         </h2>
         <p className="text-gray-600">Enter your trip details to discover the best disc golf courses along your route</p>
 >>>>>>> 938583a (fix: resolve merge conflicts between main and nonprod)
+=======
+>>>>>>> b59bce8 (Planner form implementation (#20))
       </div>
     )}
 
