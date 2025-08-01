@@ -1,36 +1,37 @@
-import { useEffect, useState } from "react";
 import { usePlanner } from "../../hooks/usePlanner"
-import { fetchGeocode } from "../../utils/geocode";
 
 export function TripStopsOverview() {
-  const { stops, form } = usePlanner()
-  const [startCoords, setStartCoords] = useState<{ lat: number; lng: number } | null>(null)
-  const [endCoords, setEndCoords] = useState<{ lat: number; lng: number } | null>(null)
-
-  useEffect(() => {
-  const lookup = async () => {
-    if (form.startLocation) {
-      const coords = await fetchGeocode(form.startLocation)
-      setStartCoords(coords)
-    }
-    if (form.endLocation) {
-      const coords = await fetchGeocode(form.endLocation)
-      setEndCoords(coords)
-    }
-  }
-  lookup()
-}, [form.startLocation, form.endLocation])
-
+  const { form, stops, setForm, clearStops, setStep } = usePlanner()
+  const { startLocation, endLocation, coursesPerDay = 2 } = form
 
   const isRoundTrip =
-    startCoords &&
-    endCoords &&
-    Math.abs(startCoords.lat - endCoords.lat) < 0.001 &&
-    Math.abs(startCoords.lng - endCoords.lng) < 0.001
+    form.startCoords &&
+    form.endCoords &&
+    Math.abs(form.startCoords.lat - form.endCoords.lat) < 0.001 &&
+    Math.abs(form.startCoords.lng - form.endCoords.lng) < 0.001
 
+  const removeStop = (index: number) => {
+    const updated = [...(form.customStops ?? [])]
+    updated.splice(index, 1)
+    setForm((prev) => ({
+      ...prev,
+      customStops: updated,
+    }))
+  }
 
- 
-  const stopsPerDay = form.coursesPerDay || 2
+  const resetPlanner = () => {
+    setForm({
+      startLocation: "",
+      endLocation: "",
+      tripDays: 3,
+      coursesPerDay: 2,
+      maxDetourMinutes: 30,
+      customStops: [],
+    })
+    clearStops()
+    setStep("start")
+  }
+
   const groupedByDay: Record<number, typeof stops> = {}
   let courseCount = 0
   let currentDay = 1
@@ -41,12 +42,11 @@ export function TripStopsOverview() {
 
     if (stop.isCourse) {
       courseCount++
-      if (courseCount % stopsPerDay === 0) {
+      if (courseCount % coursesPerDay === 0) {
         currentDay++
       }
     }
   }
-
 
   return (
     <div className="h-full rounded-lg border border-base-200 bg-white p-6 shadow-sm flex flex-col">
@@ -64,39 +64,71 @@ export function TripStopsOverview() {
         </p>
       )}
 
-      {Object.entries(groupedByDay).map(([day, dayStops]) => (
-        <div key={day} className="space-y-2 mb-4">
-          <h4 className="text-base font-semibold text-gray-700">Day {day}</h4>
+      {startLocation && (
+        <div className="mb-4">
+          <h4 className="text-base font-semibold text-gray-700 mb-1">Start</h4>
+          <div className="flex items-start gap-3 bg-base-200 p-3 rounded">
+            <div className="mt-1 text-primary">📍</div>
+            <div>
+              <p className="font-medium text-gray-900">{startLocation}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {form.customStops.length > 0 && (
+        <div className="space-y-2 mb-4">
+          <h4 className="text-base font-semibold text-gray-700">Custom Stops</h4>
           <ul className="space-y-2">
-            {dayStops.map((stop, i) => (
-              <li key={i} className="flex items-start gap-3 bg-base-200 p-3 rounded">
-                <div className="mt-1">
-                  <svg className="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <circle cx="12" cy="11" r="3" />
-                  </svg>
+            {form.customStops.map((stop, index) => (
+              <li key={index} className="flex items-start justify-between gap-3 bg-base-200 p-3 rounded">
+                <div className="flex gap-3">
+                  <div className="mt-1 text-blue-500">🥏</div>
+                  <div>
+                    <p className="font-medium text-gray-900 flex items-center gap-2">
+                      {stop.name}
+                      {stop.isCourse && (
+                        <span className="badge badge-sm badge-accent">Course</span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600">{stop.address}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-gray-900 flex items-center gap-2">
-                    {stop.name}
-                    {stop.isCourse && (
-                      <span className="badge badge-sm badge-accent">Course</span>
-                    )}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {stop.address ?? `${stop.lat.toFixed(4)}, ${stop.lng.toFixed(4)}`}
-                  </p>
-                </div>
+                <button
+                  onClick={() => removeStop(index)}
+                  className="btn btn-xs btn-outline btn-error self-start"
+                >
+                  ✕
+                </button>
               </li>
             ))}
           </ul>
         </div>
-      ))}
+      )}
+
+
+      {endLocation && (
+        <div className="mt-2">
+          <h4 className="text-base font-semibold text-gray-700 mb-1">End</h4>
+          <div className="flex items-start gap-3 bg-base-200 p-3 rounded">
+            <div className="mt-1 text-success">🏁</div>
+            <div>
+              <p className="font-medium text-gray-900">{endLocation}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(startLocation || endLocation || stops.length > 0) && (
+        <div className="mt-6 text-right">
+          <button
+            onClick={resetPlanner}
+            className="btn btn-sm btn-outline"
+          >
+            🔄 Start Over
+          </button>
+        </div>
+      )}
     </div>
   )
 }

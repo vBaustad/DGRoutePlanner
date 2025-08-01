@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { PlannerContext } from "../context/PlannerContext"
 import type { TripPlanForm } from "../types/TripPlanForm"
-import type { Stop } from "../types/PlannerTypes"
+import type { PlannerContextType, Step, Stop } from "../types/PlannerTypes"
 
 export const PlannerProvider = ({ children }: { children: React.ReactNode }) => {
+  const [step, setStep] = useState<Step>("start")
   const [form, setForm] = useState<TripPlanForm>({
     startLocation: '',
     endLocation: '',
@@ -13,14 +14,45 @@ export const PlannerProvider = ({ children }: { children: React.ReactNode }) => 
     customStops: [],
   })
 
-  const [stops, setStops] = useState<Stop[]>([])
+  const addStop = (stop: Stop) => {
+    setForm((prev) => ({
+      ...prev,
+      customStops: [...prev.customStops, stop],
+    }))
+  }
 
-  const addStop = (stop: Stop) => setStops((prev) => [...prev, stop])
-  const removeStop = (index: number) => setStops((prev) => prev.filter((_, i) => i !== index))
-  const clearStops = () => setStops([])
+  const removeStop = (index: number) => {
+    setForm((prev) => {
+      const updated = [...prev.customStops]
+      updated.splice(index, 1)
+      return {
+        ...prev,
+        customStops: updated,
+      }
+    })
+  }
+
+  const clearStops = () => {
+    setForm((prev) => ({
+      ...prev,
+      customStops: [],
+    }))
+  }
+
+  const value: PlannerContextType = {
+    form,
+    setForm,
+    stops: form.customStops,
+    addStop,
+    removeStop,
+    clearStops,
+    isCourse: true,
+    step,
+    setStep,
+  }
 
   return (
-    <PlannerContext.Provider value={{ form, setForm, stops, addStop, removeStop, clearStops, isCourse: true }}>
+    <PlannerContext.Provider value={value}>
       {children}
     </PlannerContext.Provider>
   )

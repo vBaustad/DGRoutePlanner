@@ -8,6 +8,8 @@ export type Stop = {
   isCourse: boolean
 }
 
+export type Step = "start" | "end" | "stops" | "final"
+
 export type PlannerContextType = {
   form: TripPlanForm
   setForm: React.Dispatch<React.SetStateAction<TripPlanForm>>
@@ -16,4 +18,6 @@ export type PlannerContextType = {
   removeStop: (index: number) => void
   clearStops: () => void
   isCourse: boolean
+  step: Step
+  setStep: React.Dispatch<React.SetStateAction<Step>>
 }

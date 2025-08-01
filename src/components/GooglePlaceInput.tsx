@@ -5,9 +5,11 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
-export function GooglePlaceInput({ id, value, onChange, placeholder }: Props) {
+
+export function GooglePlaceInput({ id, value, onChange, placeholder, onKeyDown }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -37,9 +39,11 @@ export function GooglePlaceInput({ id, value, onChange, placeholder }: Props) {
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      onKeyDown={onKeyDown}
       placeholder={placeholder}
       className="input input-bordered w-full"
       autoComplete="off"
     />
+
   );
 }
