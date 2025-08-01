@@ -1,6 +1,4 @@
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-
-const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+import { GoogleMap } from '@react-google-maps/api';
 
 const mapContainerStyle = {
   width: '100%',
@@ -27,13 +25,11 @@ export function MapPreview() {
         </h3>
       </div>
       <div className="h-[500px] rounded-lg overflow-hidden">
-        <LoadScript googleMapsApiKey={apiKey}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            zoom={7}
-          />
-        </LoadScript>
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={center}
+          zoom={7}
+        />
       </div>
     </div>
   );
