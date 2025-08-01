@@ -1,3 +1,11 @@
+import { useEffect } from "react";
+
+declare global {
+  interface Window {
+    adsbygoogle: unknown[];
+  }
+}
+
 export function HelpSection() {
   const steps = [
     {
@@ -49,7 +57,17 @@ export function HelpSection() {
         </svg>
       ),
     },
-  ]
+  ];
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined" && window.adsbygoogle) {
+        window.adsbygoogle.push({});
+      }
+    } catch (e) {
+      console.error("AdSense load error:", e);
+    }
+  }, []);
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
@@ -63,6 +81,7 @@ export function HelpSection() {
           How It Works
         </h3>
       </div>
+
       <div className="space-y-4">
         {steps.map((step, index) => (
           <div key={index} className="flex gap-3">
@@ -79,6 +98,25 @@ export function HelpSection() {
           </div>
         ))}
       </div>
+
+      {/* Ad Section */}
+      <div className="mt-6">
+        {/* Real Ad (commented out while testing) */}
+        {/*
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-client="ca-pub-xxxxxxxxxxxx"
+          data-ad-slot="2345678901"
+          data-ad-format="horizontal"
+        />
+        */}
+
+        {/* Debug Ad Placeholder */}
+        <div className="h-[90px] w-full border border-dashed border-indigo-500 bg-indigo-100/30 text-indigo-700 text-xs flex items-center justify-center rounded">
+          [Ad Placeholder] HelpSection bottom
+        </div>
+      </div>
     </div>
-  )
+  );
 }
