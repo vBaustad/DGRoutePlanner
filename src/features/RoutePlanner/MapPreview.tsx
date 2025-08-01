@@ -9,8 +9,7 @@ const center = {
   lat: 59.9139, 
   lng: 10.7522,
 };
-
-
+//Map preview
 export function MapPreview() {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
