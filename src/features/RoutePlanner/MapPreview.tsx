@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import { GoogleMap } from '@react-google-maps/api';
+=======
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+
+>>>>>>> 938583a (fix: resolve merge conflicts between main and nonprod)
 
 const mapContainerStyle = {
   width: '100%',
@@ -9,7 +14,12 @@ const center = {
   lat: 59.9139, 
   lng: 10.7522,
 };
+<<<<<<< HEAD
 //Map preview
+=======
+
+
+>>>>>>> 938583a (fix: resolve merge conflicts between main and nonprod)
 export function MapPreview() {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">

@@ -5,6 +5,7 @@ import { TripStopsOverview } from "./TripStopsOverview"
 
 export function RoutePlanner() {
   return (
+<<<<<<< HEAD
     <div className="grid lg:grid-cols-3 lg:grid-rows-[auto_1fr] gap-6">
       {/* Top Row */}
       <div className="lg:col-span-1">
@@ -29,6 +30,19 @@ export function RoutePlanner() {
           <TripStopsOverview />
         </div>
       </div>
+=======
+    <div className="space-y-8">
+
+      <div className="grid gap-4 items-stretch lg:grid-cols-3">        
+        <div className="lg:col-span-2 h-full">
+          <PlannerForm />
+        </div>
+        <div className="lg:col-span-1 h-full">
+          <HelpSection />
+        </div>
+      </div>
+      <MapPreview />
+>>>>>>> 938583a (fix: resolve merge conflicts between main and nonprod)
     </div>
   )
 }
