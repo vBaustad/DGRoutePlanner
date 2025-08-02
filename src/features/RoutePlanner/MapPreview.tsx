@@ -1,35 +1,60 @@
-import { GoogleMap } from '@react-google-maps/api';
+import {
+  GoogleMap,
+  Marker,
+  DirectionsRenderer,
+} from '@react-google-maps/api'
+import { useEffect, useState } from 'react'
+import type { Stop } from "../../types/PlannerTypes"
 
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-};
+type Props = {
+  route: Stop[] | null
+}
 
-const center = {
-  lat: 59.9139, 
-  lng: 10.7522,
-};
-//Map preview
-export function MapPreview() {
+export function MapPreview({ route }: Props) {
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null)
+
+  useEffect(() => {
+    if (!route || route.length < 2) return
+
+    const origin = route[0]
+    const destination = route[route.length - 1]
+    const waypoints = route.slice(1, route.length - 1).map((stop) => ({
+      location: { lat: stop.lat, lng: stop.lng },
+      stopover: true,
+    }))
+
+    const service = new google.maps.DirectionsService()
+    service.route(
+      {
+        origin: { lat: origin.lat, lng: origin.lng },
+        destination: { lat: destination.lat, lng: destination.lng },
+        waypoints,
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: true,
+      },
+      (result, status) => {
+        if (status === 'OK' && result) {
+          setDirections(result)          
+        } else {
+          console.error('Failed to get directions:', status)
+        }
+      }
+    )
+  }, [route])
+
+  const center = route?.[0] ?? { lat: 59.9139, lng: 10.7522 }
+
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="mb-4">
-        <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-          <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
-            <line x1="8" y1="2" x2="8" y2="18" />
-            <line x1="16" y1="6" x2="16" y2="22" />
-          </svg>
-          Route Preview
-        </h3>
-      </div>
+    <div className="rounded-lg border bg-white p-6 shadow-sm">
+      <h3 className="text-lg font-semibold mb-4">Route Preview</h3>
       <div className="h-[500px] rounded-lg overflow-hidden">
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={center}
-          zoom={7}
-        />
+        <GoogleMap mapContainerStyle={{ width: '100%', height: '100%' }} center={center} zoom={7}>
+          {route?.map((stop, idx) => (
+            <Marker key={idx} position={{ lat: stop.lat, lng: stop.lng }} label={`${idx + 1}`} />
+          ))}
+          {directions && <DirectionsRenderer directions={directions} />}
+        </GoogleMap>
       </div>
     </div>
-  );
+  )
 }

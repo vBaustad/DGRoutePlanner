@@ -2,8 +2,12 @@ import { PlannerForm } from "./PlannerForm"
 import { MapPreview } from "./MapPreview"
 import { HelpSection } from "./HelpSection"
 import { TripStopsOverview } from "./TripStopsOverview"
+import { useRoutePlanner } from "../../hooks/useRoutePlanner"
 
 export function RoutePlanner() {
+
+  const { route } = useRoutePlanner()
+
   return (
     <div className="grid lg:grid-cols-3 lg:grid-rows-[auto_1fr] gap-6">
       {/* Top Row */}
@@ -20,7 +24,7 @@ export function RoutePlanner() {
       {/* Bottom Row */}
       <div className="lg:col-span-2 lg:row-start-2">
         <div className="h-full">
-          <MapPreview />
+          <MapPreview route={route} />
         </div>
       </div>
 
