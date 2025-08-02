@@ -2,26 +2,25 @@ import { useState } from "react"
 import { fetchGeocode } from "../../utils/geocode"
 import { GooglePlaceInput } from "../../components/GooglePlaceInput"
 import { usePlanner } from "../../hooks/usePlanner"
+import { useRoutePlanner } from "../../hooks/useRoutePlanner"
 
 
 
 
 export function PlannerForm() {  
   const { form, setForm, addStop, step, setStep } = usePlanner()
+  const { planRoute, route, loading } = useRoutePlanner()
 
   const [input, setInput] = useState("")
   const [customName, setCustomName] = useState("")
   const [isCourse, setIsCourse] = useState(true)
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if (e.key === "Enter") {
-    e.preventDefault()
-    await handleStepAdd()
+    if (e.key === "Enter") {
+      e.preventDefault()
+      await handleStepAdd()
+    }
   }
-}
-
-
-
 
   const handleStepAdd = async () => {
     if (!input) return
@@ -77,14 +76,20 @@ export function PlannerForm() {
       }))
     }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     if (!form.startCoords || !form.endCoords) {
       alert("Start and end locations are required.")
       return
     }
-    console.log("Trip planned!", form)
+
+    await planRoute(form)
+
+    // Optional: transition to preview/map
+    console.log("Calculated route:", route)
   }
+
 
   return (
 <<<<<<< HEAD
@@ -231,6 +236,7 @@ export function PlannerForm() {
       >
         Plan My Route
       </button>
+      {loading && <p className="text-sm text-info text-center">Planning your route...</p>}
     </div>
   </form>
   )
