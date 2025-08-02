@@ -21,3 +21,38 @@ export type PlannerContextType = {
   step: Step
   setStep: React.Dispatch<React.SetStateAction<Step>>
 }
+
+export type RoutePlannerContextType = {
+  route: Stop[] | null
+  loading: boolean
+  planRoute: (form: TripPlanForm) => Promise<void>
+  summary: RouteSummary | null
+  topSuggestions: DiscGolfCourse[]
+}
+
+export interface CourseDiscoveryContextType {
+  courses: DiscGolfCourse[]
+  searchNearby: (lat: number, lng: number, radius?: number) => Promise<void>
+}
+
+export type RouteSummary = {
+  totalKm: number
+  totalHours: number
+  perDayKm: number
+  perDayHours: number
+  courseCount: number
+  stopCount: number
+}
+
+export interface DiscGolfCourse {
+  place_id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  rating: number | null;
+  reviews: number | null;
+  city: string | null;
+  country: string;
+}
+
+
