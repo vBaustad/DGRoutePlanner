@@ -114,10 +114,6 @@ export function PlannerForm() {
           placeholder="Enter a starting location"
         />
         <button type="button" onClick={handleStepAdd} className="btn btn-primary mt-4 w-full">Add Start</button>
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/nonprod
       </div>
     )}
 
