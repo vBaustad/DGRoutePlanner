@@ -6,7 +6,8 @@ export type Stop = {
   lng: number
   address?: string
   isCourse: boolean
-}
+  isSuggested?: boolean
+  courseId?: string}
 
 export type Step = "start" | "end" | "stops" | "final"
 

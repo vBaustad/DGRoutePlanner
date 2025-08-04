@@ -9,7 +9,7 @@ import { useRoutePlanner } from "../../hooks/useRoutePlanner"
 
 export function PlannerForm() {  
   const { form, setForm, addStop, step, setStep } = usePlanner()
-  const { planRoute, route, loading } = useRoutePlanner()
+  const { planRoute, loading } = useRoutePlanner()
 
   const [input, setInput] = useState("")
   const [customName, setCustomName] = useState("")
@@ -85,9 +85,6 @@ export function PlannerForm() {
     }
 
     await planRoute(form)
-
-    // Optional: transition to preview/map
-    console.log("Calculated route:", route)
   }
 
 

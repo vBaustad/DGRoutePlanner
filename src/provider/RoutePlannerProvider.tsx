@@ -14,7 +14,7 @@ export const RoutePlannerProvider = ({ children }: { children: React.ReactNode }
     setLoading(true)
     try {
       const result = await calculateRoute(form)
-
+      console.log(result)
       setRoute(result.stops)
       setTopSuggestions(result.topSuggestions)
 

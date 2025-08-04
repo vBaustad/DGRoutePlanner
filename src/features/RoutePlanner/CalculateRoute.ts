@@ -2,8 +2,8 @@ import { fetchGeocode } from "../../utils/geocode"
 import type { TripPlanForm } from "../../types/TripPlanForm"
 import type { Stop, DiscGolfCourse } from "../../types/PlannerTypes"
 import { fetchCoursesNearby } from "../../utils/fetchCoursesNearby"
-import { deduplicateCourses } from "../../utils/dediplicateCourses"
-
+import { deduplicateCourses } from "../../utils/deduplicateCourses"
+import { orderCoursesByDrivingDistance } from "../../utils/routeOptimizer"
 
 export async function calculateRoute(form: TripPlanForm): Promise<{
   stops: Stop[]
@@ -26,9 +26,19 @@ export async function calculateRoute(form: TripPlanForm): Promise<{
   if (!startCoords || !endCoords) throw new Error("Geocoding failed")
 
   const stops: Stop[] = [
-    { name: "Start", ...startCoords, isCourse: false },
+    {
+      name: form.startLocation,
+      address: form.startLocation,
+      ...startCoords,
+      isCourse: false,
+    },
     ...customStops,
-    { name: "End", ...endCoords, isCourse: false },
+    {
+      name: form.endLocation,
+      address: form.endLocation,
+      ...endCoords,
+      isCourse: false,
+    },
   ]
 
   const waypoints = customStops.map((stop) => ({
@@ -60,41 +70,60 @@ export async function calculateRoute(form: TripPlanForm): Promise<{
   const totalDistance = legs.reduce((sum, leg) => sum + (leg.distance?.value || 0), 0)
   const totalDuration = legs.reduce((sum, leg) => sum + (leg.duration?.value || 0), 0)
 
-  // 🧠 Use evenly spaced route points to discover nearby courses
+  const path = directions.routes[0].overview_path
+  const totalPoints = path.length
+
   const numCoursesNeeded = tripDays * coursesPerDay
-  const interval = Math.max(1, Math.floor(legs.length / numCoursesNeeded))
+  const numSamples = Math.max(numCoursesNeeded * 2, 10)
+  const interval = Math.floor(totalPoints / numSamples)
 
   const foundCourses: DiscGolfCourse[] = []
-
-  for (let i = 0; i < legs.length; i += interval) {
-    const midpoint = legs[i].end_location
+  for (let i = 0; i < totalPoints; i += interval) {
+    const point = path[i]
     const nearby = await fetchCoursesNearby(
-      midpoint.lat(),
-      midpoint.lng(),
-      maxDetourMinutes * 1000 // convert "minutes" to meters for now (approx)
+      point.lat(),
+      point.lng(),
+      (maxDetourMinutes / 2) * 1000
     )
     foundCourses.push(...nearby)
   }
 
   const uniqueCourses = deduplicateCourses(foundCourses)
 
-    if (uniqueCourses.length > 0 && import.meta.env.PROD) {
+  if (uniqueCourses.length > 0 && import.meta.env.PROD) {
     await fetch("/api/add-courses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(uniqueCourses),
-    });
-    } else {
-    console.log("🛑 Skipping course save — not in production");
-    }
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(uniqueCourses),
+    })
+  } else {
+    console.log("🛑 Skipping course save — not in production")
+  }
+
+  function calculateScore(course: DiscGolfCourse): number {
+    const rating = course.rating ?? 0
+    const reviews = course.reviews ?? 0
+    return Math.pow(rating, 1.5) * Math.log10(reviews + 1)
+  }
 
   const topSuggestions = uniqueCourses
     .filter(c => c.rating && c.reviews)
-    .sort((a, b) => (b.rating! * b.reviews!) - (a.rating! * a.reviews!))
+    .sort((a, b) => calculateScore(b) - calculateScore(a))
     .slice(0, numCoursesNeeded)
 
+  const orderedSuggestions = await orderCoursesByDrivingDistance(startCoords, topSuggestions)
+
+  const suggestedStops: Stop[] = orderedSuggestions.map((course) => ({
+    name: course.name,
+    lat: course.lat,
+    lng: course.lng,
+    isCourse: true,
+    isSuggested: true,
+    courseId: course.place_id,
+  }))
+
   return {
-    stops,
+    stops: [...stops.slice(0, -1), ...suggestedStops, stops[stops.length - 1]],
     totalDistance,
     totalDuration,
     discoveredCourses: uniqueCourses,
