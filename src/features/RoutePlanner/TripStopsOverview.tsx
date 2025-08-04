@@ -1,23 +1,17 @@
 import { usePlanner } from "../../hooks/usePlanner"
+import { useRoutePlanner } from "../../hooks/useRoutePlanner"
+import type { Stop } from "../../types/PlannerTypes"
 
 export function TripStopsOverview() {
-  const { form, stops, setForm, clearStops, setStep } = usePlanner()
-  const { startLocation, endLocation, coursesPerDay = 2 } = form
+  const { form, setForm, clearStops, setStep } = usePlanner()
+  const { route } = useRoutePlanner()
+  const { startLocation, endLocation, coursesPerDay = 2, customStops = [] } = form
 
   const isRoundTrip =
     form.startCoords &&
     form.endCoords &&
     Math.abs(form.startCoords.lat - form.endCoords.lat) < 0.001 &&
     Math.abs(form.startCoords.lng - form.endCoords.lng) < 0.001
-
-  const removeStop = (index: number) => {
-    const updated = [...(form.customStops ?? [])]
-    updated.splice(index, 1)
-    setForm((prev) => ({
-      ...prev,
-      customStops: updated,
-    }))
-  }
 
   const resetPlanner = () => {
     setForm({
@@ -32,11 +26,20 @@ export function TripStopsOverview() {
     setStep("start")
   }
 
-  const groupedByDay: Record<number, typeof stops> = {}
+  // 👇 This decides what to show: full route if planned, fallback to planner form data
+  const stopsToRender: Stop[] =
+    route ?? [
+      ...(form.startCoords ? [{ name: startLocation, ...form.startCoords, isCourse: false }] : []),
+      ...customStops,
+      ...(form.endCoords ? [{ name: endLocation, ...form.endCoords, isCourse: false }] : []),
+    ]
+
+  // Group by day
+  const groupedByDay: Record<number, Stop[]> = {}
   let courseCount = 0
   let currentDay = 1
 
-  for (const stop of stops) {
+  for (const stop of stopsToRender) {
     groupedByDay[currentDay] = groupedByDay[currentDay] || []
     groupedByDay[currentDay].push(stop)
 
@@ -59,72 +62,49 @@ export function TripStopsOverview() {
       </h3>
 
       {isRoundTrip && (
-        <p className="text-sm text-gray-500 mb-2">
+        <p className="text-sm text-gray-500 mb-4">
           Round trip mode enabled – your stops will loop back to the start.
         </p>
       )}
 
-      {startLocation && (
-        <div className="mb-4">
-          <h4 className="text-base font-semibold text-gray-700 mb-1">Start</h4>
-          <div className="flex items-start gap-3 bg-base-200 p-3 rounded">
-            <div className="mt-1 text-primary">📍</div>
-            <div>
-              <p className="font-medium text-gray-900">{startLocation}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {form.customStops.length > 0 && (
-        <div className="space-y-2 mb-4">
-          <h4 className="text-base font-semibold text-gray-700">Custom Stops</h4>
+      {Object.entries(groupedByDay).map(([day, stops]) => (
+        <div key={day} className="mb-6">
+          <h4 className="text-base font-semibold text-gray-700 mb-2">Day {day}</h4>
           <ul className="space-y-2">
-            {form.customStops.map((stop, index) => (
+            {stops.map((stop, index) => (
               <li key={index} className="flex items-start justify-between gap-3 bg-base-200 p-3 rounded">
                 <div className="flex gap-3">
-                  <div className="mt-1 text-blue-500">🥏</div>
+                  <div className="mt-1 text-blue-500">📍</div>
                   <div>
                     <p className="font-medium text-gray-900 flex items-center gap-2">
                       {stop.name}
-                      {stop.isCourse && (
-                        <span className="badge badge-sm badge-accent">Course</span>
+                      {index === 0 && !stop.isCourse && (
+                        <span className="badge badge-sm">Start</span>
+                      )}
+                      {stop.isCourse && stop.isSuggested && (
+                        <span className="badge badge-sm badge-info">Suggested</span>
+                      )}
+                      {stop.isCourse && !stop.isSuggested && (
+                        <span className="badge badge-sm badge-accent">Custom</span>
+                      )}
+                      {index === stops.length - 1 && !stop.isCourse && (
+                        <span className="badge badge-sm badge-success">End</span>
                       )}
                     </p>
-                    <p className="text-sm text-gray-600">{stop.address}</p>
+                    {stop.address && (
+                      <p className="text-sm text-gray-600">{stop.address}</p>
+                    )}
                   </div>
                 </div>
-                <button
-                  onClick={() => removeStop(index)}
-                  className="btn btn-xs btn-outline btn-error self-start"
-                >
-                  ✕
-                </button>
               </li>
             ))}
           </ul>
         </div>
-      )}
+      ))}
 
-
-      {endLocation && (
-        <div className="mt-2">
-          <h4 className="text-base font-semibold text-gray-700 mb-1">End</h4>
-          <div className="flex items-start gap-3 bg-base-200 p-3 rounded">
-            <div className="mt-1 text-success">🏁</div>
-            <div>
-              <p className="font-medium text-gray-900">{endLocation}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {(startLocation || endLocation || stops.length > 0) && (
-        <div className="mt-6 text-right">
-          <button
-            onClick={resetPlanner}
-            className="btn btn-sm btn-outline"
-          >
+      {(startLocation || endLocation || stopsToRender.length > 0) && (
+        <div className="mt-4 text-right">
+          <button onClick={resetPlanner} className="btn btn-sm btn-outline">
             🔄 Start Over
           </button>
         </div>

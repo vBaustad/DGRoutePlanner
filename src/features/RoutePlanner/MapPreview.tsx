@@ -2,6 +2,7 @@ import {
   GoogleMap,
   Marker,
   DirectionsRenderer,
+  InfoWindow,
 } from '@react-google-maps/api'
 import { useEffect, useState } from 'react'
 import type { Stop } from "../../types/PlannerTypes"
@@ -12,6 +13,7 @@ type Props = {
 
 export function MapPreview({ route }: Props) {
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null)
+  const [activeMarkerIndex, setActiveMarkerIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (!route || route.length < 2) return
@@ -44,15 +46,49 @@ export function MapPreview({ route }: Props) {
 
   const center = route?.[0] ?? { lat: 59.9139, lng: 10.7522 }
 
-  return (
+   return (
     <div className="rounded-lg border bg-white p-6 shadow-sm">
       <h3 className="text-lg font-semibold mb-4">Route Preview</h3>
       <div className="h-[500px] rounded-lg overflow-hidden">
-        <GoogleMap mapContainerStyle={{ width: '100%', height: '100%' }} center={center} zoom={7}>
-          {route?.map((stop, idx) => (
-            <Marker key={idx} position={{ lat: stop.lat, lng: stop.lng }} label={`${idx + 1}`} />
-          ))}
-          {directions && <DirectionsRenderer directions={directions} />}
+        <GoogleMap
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          center={center}
+          zoom={7}
+        >
+          {route?.map((stop, idx) =>
+            stop.isSuggested ? (
+              <Marker
+                key={idx}
+                position={{ lat: stop.lat, lng: stop.lng }}
+                icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                label={`${idx + 1}`}
+                title={stop.name}
+                onClick={() => setActiveMarkerIndex(idx)}
+              />
+            ) : null
+          )}
+
+          {route?.map((stop, idx) =>
+            stop.isSuggested && activeMarkerIndex === idx ? (
+              <InfoWindow
+                key={`infowindow-${idx}`}
+                position={{ lat: stop.lat, lng: stop.lng }}
+                onCloseClick={() => setActiveMarkerIndex(null)}
+              >
+                <div className="text-sm">
+                  <p className="font-semibold">#{idx + 1}: {stop.name}</p>
+                  {/* Optional future info like rating, etc */}
+                </div>
+              </InfoWindow>
+            ) : null
+          )}
+
+          {directions && (
+            <DirectionsRenderer
+              directions={directions}
+              options={{ suppressMarkers: true }}
+            />
+          )}
         </GoogleMap>
       </div>
     </div>
