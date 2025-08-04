@@ -1,9 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
-import { PlannerProvider } from './provider/PlannerProvider.tsx'
+import App from './App'
+import { PlannerProvider } from './provider/PlannerProvider'
 import { LoadScriptNext } from '@react-google-maps/api'
+import { RoutePlannerProvider } from './provider/RoutePlannerProvider'
+import { CourseDiscoveryProvider } from './provider/CourseDiscoveryProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,7 +16,11 @@ createRoot(document.getElementById('root')!).render(
       region="no"
     >    
       <PlannerProvider>
-        <App />
+        <RoutePlannerProvider>
+          <CourseDiscoveryProvider>
+            <App />
+          </CourseDiscoveryProvider>
+        </RoutePlannerProvider>
       </PlannerProvider>
     </LoadScriptNext>
   </StrictMode>
