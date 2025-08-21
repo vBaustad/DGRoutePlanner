@@ -11,10 +11,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <LoadScriptNext
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
-      libraries={["places"]}
+      libraries={["places", "geometry", "marker"]}
       language="en"
       region="no"
-    >    
+      version="beta"
+    >
       <PlannerProvider>
         <RoutePlannerProvider>
           <CourseDiscoveryProvider>
