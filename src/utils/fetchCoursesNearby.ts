@@ -1,67 +1,139 @@
-import type { DiscGolfCourse } from '../types/PlannerTypes'
+// utils/fetchCoursesNearby.ts
+import type { DiscGolfCourse } from "../types/PlannerTypes";
 
-/**
- * Shared hidden div to host the PlacesService if not injected into a real map.
- */
-function ensureHiddenMapContainer(): HTMLDivElement {
-  let container = document.getElementById('hidden-places-service') as HTMLDivElement | null;
+type PlaceDisplayName = string | { text?: string } | null | undefined;
 
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'hidden-places-service';
-    container.style.display = 'none';
-    document.body.appendChild(container);
-  }
-
-  return container;
+function unwrapDisplayName(dn: PlaceDisplayName): string {
+  return typeof dn === "string" ? dn : dn?.text ?? "";
 }
 
+function toLatLngLiteral(
+  loc: google.maps.LatLng | google.maps.LatLngLiteral | null | undefined
+): google.maps.LatLngLiteral {
+  if (!loc) return { lat: 0, lng: 0 };
+  return typeof (loc as google.maps.LatLng).lat === "function"
+    ? { lat: (loc as google.maps.LatLng).lat(), lng: (loc as google.maps.LatLng).lng() }
+    : (loc as google.maps.LatLngLiteral);
+}
 
-/**
- * Fetches nearby disc golf courses using Google Maps JS SDK PlacesService.
- */
+function looksLikeCourse(name: string, types: readonly string[] | undefined): boolean {
+  const n = name.toLowerCase();
+  const t = (types ?? []).join(",");
+  const hits =
+    n.includes("disc golf") ||
+    n.includes("discgolf") ||
+    n.includes("frisbeegolf") ||
+    n.includes("frisbee golf") ||
+    n.includes("discgolfbane") ||
+    n.includes("frisbeegolfbane") ||
+    (n.includes("disc") && (n.includes("golf") || n.includes("bane")));
+  const shop =
+    n.includes("shop") ||
+    t.includes("store") ||
+    t.includes("bicycle_store") ||
+    t.includes("clothing_store") ||
+    t.includes("home_goods_store");
+  return hits && !shop;
+}
+
+function mapPlaceToCourse(p: google.maps.places.Place): DiscGolfCourse | null {
+  const id = p.id ?? "";
+  const name = unwrapDisplayName(p.displayName);
+  const loc = toLatLngLiteral(p.location);
+  if (!id || !name || !loc) return null;
+  return {
+    place_id: id,
+    name,
+    lat: loc.lat,
+    lng: loc.lng,
+    rating: p.rating ?? null,
+    reviews: p.userRatingCount ?? null,
+    city: null,
+    country: "",
+  };
+}
+
+const clampRadius = (r: number) => Math.min(Math.max(1, Math.floor(r)), 50000);
+
+async function nearbyPass(
+  lat: number,
+  lng: number,
+  radius: number
+): Promise<google.maps.places.Place[]> {
+  const R = clampRadius(radius);
+  const { Place } = (await google.maps.importLibrary("places")) as google.maps.PlacesLibrary;
+  const { places } = await Place.searchNearby({
+    fields: ["id", "displayName", "location", "rating", "userRatingCount", "types"],
+    locationRestriction: { center: new google.maps.LatLng(lat, lng), radius: R },
+    includedPrimaryTypes: ["park", "tourist_attraction"],
+    maxResultCount: 20,
+    rankPreference: google.maps.places.SearchNearbyRankPreference.POPULARITY,
+  });
+  return places ?? [];
+}
+
+async function textPass(
+  lat: number,
+  lng: number,
+  radius: number,
+  query: string
+): Promise<google.maps.places.Place[]> {
+  const R = clampRadius(radius);
+  const { Place } = (await google.maps.importLibrary("places")) as google.maps.PlacesLibrary;
+  const resp = await Place.searchByText({
+    fields: ["id", "displayName", "location", "rating", "userRatingCount", "types"],
+    textQuery: query,
+    locationBias: { center: new google.maps.LatLng(lat, lng), radius: R },
+    language: "en",
+  });
+  return resp.places ?? [];
+}
+
 export async function fetchCoursesNearby(
   lat: number,
   lng: number,
   radius = 15000
 ): Promise<DiscGolfCourse[]> {
-  const service = new google.maps.places.PlacesService(ensureHiddenMapContainer());
+  const R = clampRadius(radius);
 
-  return new Promise((resolve) => {
-    const request: google.maps.places.PlaceSearchRequest = {
-      location: new google.maps.LatLng(lat, lng),
-      radius,
-      keyword: 'disc golf'
-    };
+  const nearby = await nearbyPass(lat, lng, R);
+  const nearbyFiltered = nearby.filter((p) =>
+    looksLikeCourse(unwrapDisplayName(p.displayName), p.types)
+  );
 
-    service.nearbySearch(request, (results, status) => {
-      if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
-        return resolve([]);
-      }
+  const keywords = [
+    "disc golf",
+    "discgolf",
+    "frisbeegolf",
+    "disc golf course",
+    "discgolfbane",
+    "frisbee golf",
+  ];
+  const textArrays = await Promise.all(keywords.map((q) => textPass(lat, lng, R, q)));
+  const textFlat = textArrays.flat();
+  const textFiltered = textFlat.filter((p) =>
+    looksLikeCourse(unwrapDisplayName(p.displayName), p.types)
+  );
 
-      const filtered = results
-        .filter((place) => {
-          const name = place.name?.toLowerCase() ?? '';
-          const types = (place.types ?? []).join(',');
-          return (
-            name.includes('disc') &&
-            name.includes('golf') &&
-            !name.includes('shop') &&
-            !types.includes('store')
-          );
-        })
-        .map((place): DiscGolfCourse => ({
-          place_id: place.place_id ?? '',
-          name: place.name ?? 'Unknown',
-          lat: place.geometry?.location?.lat() ?? 0,
-          lng: place.geometry?.location?.lng() ?? 0,
-          rating: place.rating ?? null,
-          reviews: place.user_ratings_total ?? null,
-          city: null,
-          country: 'Norway'
-        }));
+  const seen = new Set<string>();
+  const courses: DiscGolfCourse[] = [];
+  for (const p of [...nearbyFiltered, ...textFiltered]) {
+    const mapped = mapPlaceToCourse(p);
+    if (!mapped) continue;
+    if (seen.has(mapped.place_id)) continue;
+    seen.add(mapped.place_id);
+    courses.push(mapped);
+  }
 
-      resolve(filtered);
-    });
+  console.log("[fetchCoursesNearby]", {
+    radiusRequested: radius,
+    radiusUsed: R,
+    nearbyRaw: nearby.length,
+    nearbyKept: nearbyFiltered.length,
+    textRaw: textFlat.length,
+    textKept: textFiltered.length,
+    deduped: courses.length,
   });
+
+  return courses;
 }

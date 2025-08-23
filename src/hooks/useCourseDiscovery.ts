@@ -1,52 +1,75 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import type { DiscGolfCourse } from '../types/PlannerTypes';
 
+// Minimal shape we rely on from the new Places API
+type PlaceDisplayName = string | { text?: string } | undefined;
+
+interface PlaceLite {
+  id?: string;
+  displayName?: PlaceDisplayName;
+  location?: google.maps.LatLng | google.maps.LatLngLiteral | null;
+  types?: string[];
+  rating?: number;
+  userRatingCount?: number;
+}
+
+// ---- helpers (typed, no any) ----
+function unwrapDisplayName(dn: PlaceDisplayName): string {
+  return typeof dn === 'string' ? dn : dn?.text ?? '';
+}
+
+function toLatLngLiteral(
+  loc: google.maps.LatLng | google.maps.LatLngLiteral | null | undefined
+): google.maps.LatLngLiteral {
+  if (!loc) return { lat: 0, lng: 0 };
+  // LatLng instance has .lat()/.lng()
+  return typeof (loc as google.maps.LatLng).lat === 'function'
+    ? { lat: (loc as google.maps.LatLng).lat(), lng: (loc as google.maps.LatLng).lng() }
+    : (loc as google.maps.LatLngLiteral);
+}
+
 export function useCourseDiscovery() {
-  const serviceRef = useRef<google.maps.places.PlacesService | null>(null);
-
-  const setServiceContainer = useCallback((map: google.maps.Map) => {
-    serviceRef.current = new google.maps.places.PlacesService(map);
-  }, []);
-
   const discoverCourses = useCallback(
-    (lat: number, lng: number, radius = 15000): Promise<DiscGolfCourse[]> => {
-      return new Promise((resolve, reject) => {
-        if (!serviceRef.current) return reject('PlacesService not initialized');
+    async (lat: number, lng: number, radius = 15000): Promise<DiscGolfCourse[]> => {
+      // Ensure 'places' library is loaded
+      const { Place } = (await google.maps.importLibrary('places')) as google.maps.PlacesLibrary;
 
-        const request: google.maps.places.PlaceSearchRequest = {
-          location: new google.maps.LatLng(lat, lng),
+      const { places } = await Place.searchNearby({
+        fields: ['id', 'displayName', 'location', 'rating', 'userRatingCount', 'types'],
+        locationRestriction: {
+          center: new google.maps.LatLng(lat, lng),
           radius,
-          keyword: 'disc golf'
-        };
-
-        serviceRef.current.nearbySearch(request, (results, status) => {
-          if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
-            return reject(status);
-          }
-
-          const filtered: DiscGolfCourse[] = results
-            .filter(place => {
-              const name = place.name?.toLowerCase() ?? '';
-              const types = place.types?.join(',') ?? '';
-              return name.includes('disc') && name.includes('golf') && !types.includes('store');
-            })
-            .map(place => ({
-              place_id: place.place_id!,
-              name: place.name!,
-              lat: place.geometry?.location?.lat() ?? 0,
-              lng: place.geometry?.location?.lng() ?? 0,
-              rating: place.rating ?? null,
-              reviews: place.user_ratings_total ?? null,
-              city: null,
-              country: 'Norway'
-            }));
-
-          resolve(filtered);
-        });
+        },
+        // optional; tune as you like
+        includedPrimaryTypes: ['park', 'tourist_attraction'],
+        maxResultCount: 20,
+        rankPreference: google.maps.places.SearchNearbyRankPreference.POPULARITY,
       });
+
+      const filtered: DiscGolfCourse[] = (places as PlaceLite[] | undefined ?? [])
+        .filter((p) => {
+          const name = unwrapDisplayName(p.displayName).toLowerCase();
+          const types = (p.types ?? []).join(',');
+          return name.includes('disc') && name.includes('golf') && !types.includes('store');
+        })
+        .map((p) => {
+          const pos = toLatLngLiteral(p.location);
+          return {
+            place_id: p.id ?? '',
+            name: unwrapDisplayName(p.displayName) || 'Unknown',
+            lat: pos.lat,
+            lng: pos.lng,
+            rating: p.rating ?? null,
+            reviews: p.userRatingCount ?? null,
+            city: null,
+            country: 'Norway', // keep your previous default
+          } as DiscGolfCourse;
+        });
+
+      return filtered;
     },
     []
   );
 
-  return { setServiceContainer, discoverCourses };
+  return { discoverCourses };
 }
