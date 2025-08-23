@@ -13,6 +13,7 @@
     "@react-google-maps/api": "^2.20.7",
     "@tailwindcss/vite": "^4.1.11",
     "daisyui": "^5.0.50",
+    "lucide-react": "^0.539.0",
     "pg": "^8.16.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

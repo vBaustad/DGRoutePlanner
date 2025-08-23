@@ -1,49 +1,29 @@
-import { useEffect } from "react"
-import { RoutePlanner } from "./features/RoutePlanner/RoutePlanner"
-
-declare global {
-  interface Window {
-    adsbygoogle: unknown[]
-  }
-}
+import { AdSlot } from "./components/AdSlot";
+import { RoutePlanner } from "./features/RoutePlanner/RoutePlanner";
 
 export default function App() {
-  useEffect(() => {
-    try {
-      if (typeof window !== "undefined") {
-        (window.adsbygoogle = window.adsbygoogle || []).push({})
-      }
-    } catch (e) {
-      console.error("Adsense error", e)
-    }
-  }, [])
+  const isDev = import.meta.env.DEV;
 
   return (
     <div className="min-h-screen bg-base-300 relative">
-      {/* Sticky Left Ad */}
+      {/* Sticky Left Ad (Desktop only) */}
       <div className="hidden lg:block fixed left-0 top-[100px] z-30">
-          <div className="border border-dashed border-red-500 bg-red-100/20 text-xs text-red-700 px-2 py-1 w-[160px] h-[600px] flex items-center justify-center">
-            Left Ad (debug)
-          </div>
-        {/* <ins
-          className="adsbygoogle"
-          style={{ display: "block", width: "160px", height: "600px" }}
-          data-ad-client="ca-pub-xxxxxxxxxxxx"
-          data-ad-slot="LEFT_SLOT_ID"
-        /> */}
+        <AdSlot
+          slot="LEFT_SLOT_ID"
+          width={160}
+          height={600}
+          test={isDev}
+        />
       </div>
 
-      {/* Sticky Right Ad */}
+      {/* Sticky Right Ad (Desktop only) */}
       <div className="hidden lg:block fixed right-0 top-[100px] z-30">
-          <div className="border border-dashed border-blue-500 bg-blue-100/20 text-xs text-blue-700 px-2 py-1 w-[160px] h-[600px] flex items-center justify-center">
-            Right Ad (debug)
-          </div>
-        {/* <ins
-          className="adsbygoogle"
-          style={{ display: "block", width: "160px", height: "600px" }}
-          data-ad-client="ca-pub-xxxxxxxxxxxx"
-          data-ad-slot="RIGHT_SLOT_ID"
-        /> */}
+        <AdSlot
+          slot="RIGHT_SLOT_ID"
+          width={160}
+          height={600}
+          test={isDev}
+        />
       </div>
 
       {/* Header */}
@@ -56,19 +36,34 @@ export default function App() {
               className="h-14 w-14 object-contain"
             />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Disc Golf Route Planner</h1>
-              <p className="text-sm text-gray-600">Plan your perfect disc golf adventure</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Disc Golf Route Planner
+              </h1>
+              <p className="text-sm text-gray-600">
+                Plan your perfect disc golf adventure
+              </p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="relative z-10 container mx-auto px-4 py-4">
         <div className="mx-auto max-w-8xl">
           <RoutePlanner />
         </div>
+
+        {/* Mobile/Tablet Banner Ad */}
+        <div className="block lg:hidden mt-6">
+          <AdSlot
+            slot="RESPONSIVE_MOBILE_SLOT_ID"
+            width="100%"
+            height={100}
+            className="mx-auto"
+            test={isDev}
+          />
+        </div>
       </main>
     </div>
-  )
+  );
 }
