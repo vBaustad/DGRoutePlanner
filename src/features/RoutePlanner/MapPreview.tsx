@@ -74,7 +74,7 @@ export function MapPreview({ route }: Props) {
   const visibleStops = orderedStops ?? route ?? [];
   const center = route?.[0] ?? { lat: 59.9139, lng: 10.7522 };
 
-  return (
+   return (
     <div className="rounded-lg border bg-white p-6 shadow-sm">
       {/* ... header & summary omitted for brevity ... */}
 

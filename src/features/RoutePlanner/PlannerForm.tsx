@@ -13,7 +13,6 @@ type SelectedPlace = {
 export function PlannerForm() {
   const { form, setForm, addStop, step, setStep } = usePlanner()
   const { planRoute, loading, progress } = useRoutePlanner()
-
   const [input, setInput] = useState("")
   const [selectedPlace, setSelectedPlace] = useState<SelectedPlace | null>(null)
   const [customName, setCustomName] = useState("")
@@ -109,7 +108,6 @@ export function PlannerForm() {
         </svg>
         Plan Your Disc Golf Trip
       </h2>
-
       {step === "start" && (
         <div>
           <label className="label label-text">Add Your Start Location</label>

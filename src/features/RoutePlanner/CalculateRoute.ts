@@ -66,6 +66,7 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
   // ---------- 1) Directions: start → custom → end ----------
   ping({ step: "geocode", message: "Finding your tee and basket…", percent: 8 });
 
+
   const startCoords = await fetchGeocode(startLocation);
   const endCoords = await fetchGeocode(endLocation);
   if (!startCoords || !endCoords) throw new Error("Geocoding failed");
