@@ -6,6 +6,8 @@ export type Stop = {
   lng: number
   address?: string
   isCourse: boolean
+  rating?: number | null
+  reviews?: number | null
   isSuggested?: boolean
   courseId?: string
 }

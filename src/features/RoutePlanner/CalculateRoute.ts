@@ -6,6 +6,7 @@ import { fetchCoursesNearby } from "../../utils/fetchCoursesNearby";
 import { deduplicateCourses } from "../../utils/deduplicateCourses";
 import { filterByDrivingDetour } from "../../utils/filterByDetour";
 import { orderByGoogleDirections } from "../../utils/orderByGoogleDirections";
+import { courseToStop } from "../../utils/courseToStop";
 
 export type PlannerMode = "full" | "suggestionsOnly";
 
@@ -222,14 +223,7 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
   // ---------- 6) Build final stop list ----------
   const finalStops: Stop[] = [
     { name: startLocation, address: startLocation, ...startCoords, isCourse: false },
-    ...optimized.map(c => ({
-      name: c.name,
-      lat: c.lat,
-      lng: c.lng,
-      isCourse: true,
-      isSuggested: true,
-      courseId: c.place_id,
-    })),
+    ...optimized.map(courseToStop), // preserves rating/reviews
     { name: endLocation, address: endLocation, ...endCoords, isCourse: false },
   ];
 

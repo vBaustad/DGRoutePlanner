@@ -112,18 +112,24 @@ export function TripStopsOverview() {
                         {isCustomCourse && <span className="badge badge-sm badge-accent">Custom</span>}
                         {isEnd && <span className="badge badge-sm badge-success">End</span>}
                       </p>
-
-                      {isSuggested && (
-                        <button
-                          className="btn btn-xs btn-outline btn-error ml-2"
-                          onClick={() => handleRemove(stop.courseId)}
-                          disabled={!stop.courseId || removingId === stop.courseId}
-                          aria-label="Remove suggested stop"
-                        >
-                          {removingId === stop.courseId ? "Removing…" : "✕ Remove"}
-                        </button>
-                      )}
-
+                      <div className="flex items-center flex-wrap gap-2 mt-2">
+                        {isSuggested && (
+                          <button
+                            className="btn btn-xs btn-outline btn-error"
+                            onClick={() => handleRemove(stop.courseId)}
+                            disabled={!stop.courseId || removingId === stop.courseId}
+                            aria-label="Remove suggested stop"
+                          >
+                            {removingId === stop.courseId ? "Removing…" : "✕ Remove"}
+                          </button>
+                        )}
+                        {(stop.isCourse && (stop.rating || stop.reviews)) && (
+                          <p className="text-sm text-yellow-600">
+                            {stop.rating ? `⭐ ${stop.rating}` : "No rating"}{" "}
+                            {stop.reviews ? `(${stop.reviews} reviews)` : "(No reviews)"}
+                          </p>
+                        )}
+                      </div>  
                       {stop.address && (
                         <p className="text-sm text-gray-600">{stop.address}</p>
                       )}

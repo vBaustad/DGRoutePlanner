@@ -9,6 +9,7 @@ import type {
   DiscGolfCourse,
   RouteProgress,            // <-- import
 } from "../types/PlannerTypes";
+import { courseToStop } from "../utils/courseToStop";
 
 export const RoutePlannerProvider = ({ children }: { children: React.ReactNode }) => {
   const [route, setRoute] = useState<Stop[] | null>(null);
@@ -72,43 +73,33 @@ export const RoutePlannerProvider = ({ children }: { children: React.ReactNode }
     }
   }, [removedPlaceIds]);
 
-  const removeSuggestedStop = useCallback(async (placeId: string): Promise<void> => {
-    if (!route) return;
+const removeSuggestedStop = useCallback(async (placeId: string) => {
+  setRemovedPlaceIds(prev => {
+    const next = new Set(prev);
+    next.add(placeId);
+    return next;
+  });
 
-    let nextRemoved = new Set<string>();
-    setRemovedPlaceIds(prev => {
-      nextRemoved = new Set(prev);
-      nextRemoved.add(placeId);
-      return nextRemoved;
-    });
+  setRoute(curr => {
+    if (!curr) return curr;
 
-    const removedIndex = route.findIndex(s => s.courseId === placeId);
-    if (removedIndex < 0) return;
+    const idx = curr.findIndex(s => s.courseId === placeId);
+    if (idx === -1) return curr;
 
-    const updatedRoute = route.filter(s => s.courseId !== placeId);
+    const inUse = new Set(curr.filter(s => s.isCourse).map(s => s.courseId));
+    const nextSuggestion = topSuggestions.find(c =>
+      !inUse.has(c.place_id) && !removedPlaceIds.has(c.place_id) && c.place_id !== placeId
+    );
 
-    const usedPlaceIds = new Set<string>((updatedRoute.map(s => s.courseId).filter(Boolean) as string[]));
-    let replacement = topSuggestions.find(c => !usedPlaceIds.has(c.place_id) && !nextRemoved.has(c.place_id));
+    // If none available, simply remove the stop
+    if (!nextSuggestion) return [...curr.slice(0, idx), ...curr.slice(idx + 1)];
 
-    if (!replacement) {
-      const fresh = await refreshSuggestions();
-      replacement = fresh.find(c => !usedPlaceIds.has(c.place_id) && !nextRemoved.has(c.place_id));
-    }
-
-    if (replacement) {
-      const newStop: Stop = {
-        name: replacement.name,
-        lat: replacement.lat,
-        lng: replacement.lng,
-        isCourse: true,
-        isSuggested: true,
-        courseId: replacement.place_id,
-      };
-      updatedRoute.splice(removedIndex, 0, newStop);
-    }
-
-    setRoute(updatedRoute);
-  }, [route, topSuggestions, refreshSuggestions]);
+    const replacement = courseToStop(nextSuggestion); // ⭐ keeps rating/reviews
+    const nextRoute = [...curr];
+    nextRoute[idx] = replacement;
+    return nextRoute;
+  });
+}, [topSuggestions, removedPlaceIds]);
 
   const resetRoute = useCallback(() => {
     setRoute(null);
