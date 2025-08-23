@@ -1,5 +1,6 @@
 import { AdSlot } from "./components/AdSlot";
 import { RoutePlanner } from "./features/RoutePlanner/RoutePlanner";
+import logoUrl from "./assets/images/DGRoutePlannerCropped.png";
 
 export default function App() {
   const isDev = import.meta.env.DEV;
@@ -31,7 +32,7 @@ export default function App() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
             <img
-              src="/src/assets/images/DGRoutePlannerCropped.png"
+              src={logoUrl}
               alt="DGRoutePlanner Logo"
               className="h-14 w-14 object-contain"
             />
