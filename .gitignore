@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .env
 .vercel
+
+# generated at prebuild
+public/robots.txt
+public/sitemap.xml

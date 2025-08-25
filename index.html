@@ -2,19 +2,79 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/assets/images/BrowserTabLogo/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Title + human-friendly summary -->
+    <title>Disc Golf Route Planner — Find courses along your road trip</title>
+    <meta name="description" content="Plan disc golf road trips. Enter start & end, add custom stops, and get top-rated course suggestions along your route with controlled detours." />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://dgrouteplanner.com/" />
+
+    <!-- Performance (Google Maps) -->
+    <link rel="preconnect" href="https://maps.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+
+    <!-- Icons (served from /public) -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/SiteLogo.png" sizes="180x180">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DG Route Planner" />
+    <meta property="og:title" content="Disc Golf Route Planner" />
+    <meta property="og:description" content="Find disc golf courses along your drive and build the perfect route." />
+    <meta property="og:url" content="https://dgrouteplanner.com/" />
+    <meta property="og:image" content="https://dgrouteplanner.com/og-cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="DG Route Planner — plan disc golf road trips with course stops" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Disc Golf Route Planner" />
+    <meta name="twitter:description" content="Find disc golf courses along your drive and build the perfect route." />
+    <meta name="twitter:image" content="https://dgrouteplanner.com/og-cover.png" />
+    <meta name="twitter:image:alt" content="DG Route Planner — plan disc golf road trips with course stops" />
 
     <!-- Google Ads -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9717693672458065"
-      crossorigin="anonymous"></script>
+    <script type="module">
+      if (import.meta.env.PROD) {
+        const s = document.createElement('script');
+        s.async = true;
+        s.crossOrigin = 'anonymous';
+        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9717693672458065';
+        document.head.appendChild(s);
+      }
+    </script>
 
-    <title>DG Route Planner</title>
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "DG Route Planner",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Web",
+        "url": "https://dgrouteplanner.com/",
+        "description": "Plan disc golf road trips with smart course suggestions and detour control.",
+        "image": "https://dgrouteplanner.com/og-cover.png",
+        "publisher": {
+          "@type": "Organization",
+          "name": "DG Route Planner",
+          "sameAs": [
+            "https://github.com/vBaustad/DGRoutePlanner",
+            "https://www.linkedin.com/in/vBaustad/"
+          ]
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
-
