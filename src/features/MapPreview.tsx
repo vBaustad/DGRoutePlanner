@@ -74,86 +74,82 @@ export function MapPreview({ route }: Props) {
   const visibleStops = orderedStops ?? route ?? [];
   const center = route?.[0] ?? { lat: 59.9139, lng: 10.7522 };
 
-   return (
-    <div className="rounded-lg border bg-white p-6 shadow-sm">
-      {/* ... header & summary omitted for brevity ... */}
+   return (    
+    <div className="h-full min-h-[320px]">
+      <GoogleMap
+        key={visibleStops.length === 0 ? "empty" : "with-route"} // optional hard reset key
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        center={center}
+        zoom={route && route.length > 0 ? 8 : 7}
+        onLoad={onMapLoad}
+        options={{
+          mapId: "55f3dc109db2f884843985ee",
+          gestureHandling: "greedy",
+          zoomControl: true,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: true,
+        }}
+      >
+        {directions && (
+          <DirectionsRenderer
+            directions={directions}
+            options={{
+              suppressMarkers: true,
+              polylineOptions: { strokeColor: "#3B82F6", strokeWeight: 4 },
+            }}
+          />
+        )}
 
-      <div className="h-[500px] rounded-lg overflow-hidden">
-        <GoogleMap
-          key={visibleStops.length === 0 ? "empty" : "with-route"} // optional hard reset key
-          mapContainerStyle={{ width: "100%", height: "100%" }}
-          center={center}
-          zoom={route && route.length > 0 ? 8 : 7}
-          onLoad={onMapLoad}
-          options={{
-            mapId: "55f3dc109db2f884843985ee",
-            gestureHandling: "greedy",
-            zoomControl: true,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: true,
-          }}
-        >
-          {directions && (
-            <DirectionsRenderer
-              directions={directions}
-              options={{
-                suppressMarkers: true,
-                polylineOptions: { strokeColor: "#3B82F6", strokeWeight: 4 },
+        {/* Render markers in optimized order and register them */}
+        {visibleStops.map((stop, idx) => {
+          const isStart = idx === 0;
+          const isEnd = idx === visibleStops.length - 1;
+          const color = isStart ? "#10B981" : isEnd ? "#EF4444" : "#3B82F6";
+          return (
+            <Pin
+              key={`${stop.name}-${idx}`}
+              map={mapRef.current}
+              position={{ lat: stop.lat, lng: stop.lng }}
+              title={stop.name}
+              label={`${idx + 1}`}
+              bg={color}
+              onCreate={marker => markersRef.current.push(marker)}
+              onDestroy={marker => {
+                // Remove one instance from our registry
+                const i = markersRef.current.indexOf(marker);
+                if (i >= 0) markersRef.current.splice(i, 1);
               }}
+              onClick={() => setActiveIndex(idx)}
             />
-          )}
+          );
+        })}
 
-          {/* Render markers in optimized order and register them */}
-          {visibleStops.map((stop, idx) => {
-            const isStart = idx === 0;
-            const isEnd = idx === visibleStops.length - 1;
-            const color = isStart ? "#10B981" : isEnd ? "#EF4444" : "#3B82F6";
-            return (
-              <Pin
-                key={`${stop.name}-${idx}`}
-                map={mapRef.current}
-                position={{ lat: stop.lat, lng: stop.lng }}
-                title={stop.name}
-                label={`${idx + 1}`}
-                bg={color}
-                onCreate={marker => markersRef.current.push(marker)}
-                onDestroy={marker => {
-                  // Remove one instance from our registry
-                  const i = markersRef.current.indexOf(marker);
-                  if (i >= 0) markersRef.current.splice(i, 1);
-                }}
-                onClick={() => setActiveIndex(idx)}
-              />
-            );
-          })}
-
-          {activeIndex !== null && visibleStops[activeIndex] && (
-            <InfoWindow
-              position={{
-                lat: visibleStops[activeIndex].lat,
-                lng: visibleStops[activeIndex].lng,
-              }}
-              onCloseClick={() => setActiveIndex(null)}
-            >
-              <div className="text-sm">
-                <p className="font-semibold">
-                  {activeIndex === 0
-                    ? "🏁 Start: "
-                    : activeIndex === visibleStops.length - 1
-                    ? "🏆 End: "
-                    : `⛳ Stop ${activeIndex}: `}
-                  {visibleStops[activeIndex].name}
-                </p>
-                <p className="text-gray-600 text-xs mt-1">
-                  {visibleStops[activeIndex].lat.toFixed(4)}, {visibleStops[activeIndex].lng.toFixed(4)}
-                </p>
-              </div>
-            </InfoWindow>
-          )}
-        </GoogleMap>
-      </div>
-    </div>
+        {activeIndex !== null && visibleStops[activeIndex] && (
+          <InfoWindow
+            position={{
+              lat: visibleStops[activeIndex].lat,
+              lng: visibleStops[activeIndex].lng,
+            }}
+            onCloseClick={() => setActiveIndex(null)}
+          >
+            <div className="text-sm">
+              <p className="font-semibold">
+                {activeIndex === 0
+                  ? "🏁 Start: "
+                  : activeIndex === visibleStops.length - 1
+                  ? "🏆 End: "
+                  : `⛳ Stop ${activeIndex}: `}
+                {visibleStops[activeIndex].name}
+              </p>
+              <p className="text-gray-600 text-xs mt-1">
+                {visibleStops[activeIndex].lat.toFixed(4)}, {visibleStops[activeIndex].lng.toFixed(4)}
+              </p>
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
+    </div>    
   );
 }
 

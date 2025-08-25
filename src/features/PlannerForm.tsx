@@ -1,22 +1,22 @@
-import { useState } from "react"
-import { GooglePlaceInput } from "../../components/GooglePlaceInput"
-import { usePlanner } from "../../hooks/usePlanner"
-import { useRoutePlanner } from "../../hooks/useRoutePlanner"
+import { useState } from "react";
+import { GooglePlaceInput } from "../components/GooglePlaceInput";
+import { usePlanner } from "../hooks/usePlanner";
+import { useRoutePlanner } from "../hooks/useRoutePlanner";
 import { Tag } from "lucide-react";
 
 type SelectedPlace = {
-  address: string
-  lat: number
-  lng: number
-}
+  address: string;
+  lat: number;
+  lng: number;
+};
 
 export function PlannerForm() {
-  const { form, setForm, addStop, step, setStep } = usePlanner()
-  const { planRoute, loading, progress } = useRoutePlanner()
-  const [input, setInput] = useState("")
-  const [selectedPlace, setSelectedPlace] = useState<SelectedPlace | null>(null)
-  const [customName, setCustomName] = useState("")
-  const [isCourse, setIsCourse] = useState(true)
+  const { form, setForm, addStop, step, setStep } = usePlanner();
+  const { planRoute, loading, progress } = useRoutePlanner();
+  const [input, setInput] = useState("");
+  const [selectedPlace, setSelectedPlace] = useState<SelectedPlace | null>(null);
+  const [customName, setCustomName] = useState("");
+  const [isCourse, setIsCourse] = useState(true);
 
   const handleStepAdd = () => {
     if (!selectedPlace) {
@@ -29,23 +29,23 @@ export function PlannerForm() {
         ...prev,
         startLocation: selectedPlace.address,
         startCoords: { lat: selectedPlace.lat, lng: selectedPlace.lng },
-      }))
-      setInput("")
-      setSelectedPlace(null)
-      setStep("end")
+      }));
+      setInput("");
+      setSelectedPlace(null);
+      setStep("end");
     } else if (step === "end") {
       setForm((prev) => ({
         ...prev,
         endLocation: selectedPlace.address,
         endCoords: { lat: selectedPlace.lat, lng: selectedPlace.lng },
-      }))
-      setInput("") 
-      setSelectedPlace(null)
-      setStep("stops")
+      }));
+      setInput("");
+      setSelectedPlace(null);
+      setStep("stops");
     } else if (step === "stops") {
       if (!customName.trim()) {
-        alert("Please name your stop")
-        return
+        alert("Please name your stop");
+        return;
       }
 
       addStop({
@@ -54,33 +54,33 @@ export function PlannerForm() {
         lat: selectedPlace.lat,
         lng: selectedPlace.lng,
         isCourse,
-      })
+      });
 
-      setCustomName("")
-      setInput("")
-      setSelectedPlace(null)
-      setIsCourse(true)
+      setCustomName("");
+      setInput("");
+      setSelectedPlace(null);
+      setIsCourse(true);
     }
-  }
+  };
 
   const handleNumberChange =
     (key: "tripDays" | "coursesPerDay" | "maxDetourMinutes") =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseInt(e.target.value)
+      const value = parseInt(e.target.value);
       setForm((prev) => ({
         ...prev,
         [key]: isNaN(value) ? 0 : value,
-      }))
-    }
+      }));
+    };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!form.startCoords || !form.endCoords) {
-      alert("Start and end locations are required.")
-      return
+      alert("Start and end locations are required.");
+      return;
     }
-    await planRoute(form)
-  }
+    await planRoute(form);
+  };
 
   const handlePlaceChange = (place: SelectedPlace) => {
     setInput(place.address);
@@ -89,7 +89,6 @@ export function PlannerForm() {
 
   const handleInputChange = (value: string) => {
     setInput(value);
-    // Clear selected place if user is typing manually
     if (selectedPlace && value !== selectedPlace.address) {
       setSelectedPlace(null);
     }
@@ -98,7 +97,7 @@ export function PlannerForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="card bg-base-100 shadow p-6 space-y-6 min-h-[500px] flex flex-col"
+      className="card bg-base-100 p-5 space-y-6 flex flex-col"
     >
       <h2 className="text-xl font-bold flex items-center gap-2">
         <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,6 +107,7 @@ export function PlannerForm() {
         </svg>
         Plan Your Disc Golf Trip
       </h2>
+
       {step === "start" && (
         <div>
           <label className="label label-text">Add Your Start Location</label>
@@ -126,9 +126,6 @@ export function PlannerForm() {
           >
             Add Start
           </button>
-          {input && !selectedPlace && (
-            <p className="text-sm text-warning mt-2">Please select a location from the dropdown</p>
-          )}
         </div>
       )}
 
@@ -169,9 +166,7 @@ export function PlannerForm() {
                           text-[14px] leading-[24px] text-black
                           placeholder:text-gray-500 pl-11 pr-3"
               />
-              <Tag
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
-              />
+              <Tag className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
             </div>
             <GooglePlaceInput
               id="customStop"
@@ -199,16 +194,10 @@ export function PlannerForm() {
           >
             Add Stop
           </button>
-          {input && !selectedPlace && (
-            <p className="text-sm text-warning mt-2">Please select a location from the dropdown</p>
-          )}
-          {!customName.trim() && selectedPlace && (
-            <p className="text-sm text-warning mt-2">Please enter a name for this stop</p>
-          )}
         </div>
       )}
 
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="form-control">
             <label className="label label-text" htmlFor="tripDays">Trip Duration (Days)</label>
@@ -235,24 +224,35 @@ export function PlannerForm() {
           </div>
         </div>
 
-        <div className="form-control">
-          <label className="label label-text" htmlFor="maxDetourMinutes">Max Detour (Minutes)</label>
-          <input
-            id="maxDetourMinutes"
-            type="number"
-            min={0}
-            value={form.maxDetourMinutes}
-            onChange={handleNumberChange("maxDetourMinutes")}
-            className="input input-bordered w-full"
-          />
-        </div>
+        {/* Advanced toggle (hidden by default) */}
+        <details className="mt-1">
+          <summary className="cursor-pointer select-none text-sm link link-primary">
+            Advanced options
+          </summary>
+          <div className="mt-3 form-control">
+            <label className="label label-text" htmlFor="maxDetourMinutes">Max Detour (Minutes)</label>
+            <input
+              id="maxDetourMinutes"
+              type="number"
+              min={0}
+              value={form.maxDetourMinutes}
+              onChange={handleNumberChange("maxDetourMinutes")}
+              className="input input-bordered w-full"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Only suggest courses with one-way driving time from your route ≤ this value.
+            </p>
+          </div>
+        </details>
 
-        <button type="submit" className="btn btn-accent w-full mt-4">
-          Plan My Route
-        </button>
-        
+        {!loading && (
+          <button type="submit" className="btn btn-accent w-full">
+            Plan My Route
+          </button>
+        )}
+
         {loading && (
-          <div className="mb-3 rounded bg-base-200 p-2 text-sm">
+          <div className="rounded bg-base-200 p-2 text-sm" role="status" aria-live="polite">
             <div className="font-medium">
               {progress?.message ?? "Planning your adventure…"}
             </div>
@@ -263,5 +263,5 @@ export function PlannerForm() {
         )}
       </div>
     </form>
-  )
+  );
 }
