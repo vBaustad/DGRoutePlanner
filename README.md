@@ -1,23 +1,40 @@
 # 🥏 DGRoutePlanner
 
-**DGRoutePlanner** is a web app that helps disc golf enthusiasts plan their ultimate roadtrip by discovering courses along their journey. Input your start and end locations, choose how many days you'll travel, and get a personalized route with nearby disc golf courses.
+**DGRoutePlanner** helps disc golfers plan road trips by finding great courses along the way. Enter start/end, (optionally) add stops, set how many courses per day — and we’ll suggest top-rated courses within a sensible detour.
+
+🔗 **Live planner:** https://dgrouteplanner.com/
 
 ---
 
-## 🌍 Features
+## 🌟 Features
 
-- 📍 **Map-based route preview** with disc golf course markers
-- 🚗 **Trip planning** based on travel days and course density
-- 🎯 **Course discovery** between start and destination
-- 🏕️ Add destinations, hotels, and rest stops (coming soon)
-- 💾 Save and load trip plans locally (no login required)
-- 📤 Export or import plans as Excel or JSON (planned)
+- 📍 **Interactive map** with an optimized driving route and custom pins
+- 🧭 **Smart course suggestions** along your route with detour control
+- ⭐ **Ratings & review counts** shown in the itinerary
+- 🔁 **One-click replace**: remove a suggestion and we pop in another
+- 🧰 **Advanced options** (toggle): set **Max Detour (minutes)**
+- 🧱 **Scrollable itinerary panel** with sticky day headers
+- 🧩 Custom stops (hotels, landmarks, etc.)
+- 🔒 No login needed; all planning is client-side
+
+> Planned: save/load trips locally, export/import (JSON/CSV), richer course details.
 
 ---
 
-## 🚧 Tech Stack
+## 🧠 How it works (high level)
 
-- **Frontend:** React + TypeScript + Vite
-- **Styling:** Tailwind CSS
-- **Maps:** Google Maps API (`@react-google-maps/api`)
+1. Geocodes start/end (+ any custom stops)
+2. Builds a driving route with Google Directions
+3. Scans along the route for nearby disc golf courses
+4. Filters by **Max Detour** (driving time from the route)
+5. Ranks by rating + number of reviews
+6. Lets Google optimize the stop order
+
+---
+
+## 🛠 Tech Stack
+
+- **React + TypeScript + Vite**
+- **Tailwind CSS** (+ DaisyUI components)
+- **Google Maps Platform** via `@react-google-maps/api`
 - **Hosting:** Vercel
