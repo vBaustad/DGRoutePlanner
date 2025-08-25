@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GooglePlaceInput } from "../components/GooglePlaceInput";
+import { GooglePlaceInput } from "./GooglePlaceInput";
 import { usePlanner } from "../hooks/usePlanner";
 import { useRoutePlanner } from "../hooks/useRoutePlanner";
 import { Tag } from "lucide-react";

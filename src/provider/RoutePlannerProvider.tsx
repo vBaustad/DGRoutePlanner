@@ -1,23 +1,23 @@
 // provider/RoutePlannerProvider.tsx
 import { useState, useRef, useCallback } from "react";
-import { RoutePlannerContext } from "../context/RoutePlannerContext";
-import { calculateRoute } from "../utils/calculateRoute";
-import type { TripPlanForm } from "../types/TripPlanForm";
+import { RoutePlannerContext } from "../features/route-planner/context/RoutePlannerContext";
+import { calculateRoute } from "../features/route-planner/services/calculateRoute";
+import type { TripPlanForm } from "../features/route-planner/types/TripPlanForm";
 import type {
   Stop,
   RouteSummary,
   DiscGolfCourse,
-  RouteProgress,            // <-- import
-} from "../types/PlannerTypes";
-import { courseToStop } from "../utils/courseToStop";
+  RouteProgress,
+} from "../features/route-planner/types/PlannerTypes";
+import { courseToStop } from "../features/route-planner/utils/courseToStop";
 
 export const RoutePlannerProvider = ({ children }: { children: React.ReactNode }) => {
   const [route, setRoute] = useState<Stop[] | null>(null);
   const [summary, setSummary] = useState<RouteSummary | null>(null);
   const [topSuggestions, setTopSuggestions] = useState<DiscGolfCourse[]>([]);
   const [removedPlaceIds, setRemovedPlaceIds] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(false);                // keep loading
-  const [progress, setProgress] = useState<RouteProgress | null>(null); // <-- typed
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState<RouteProgress | null>(null);
 
   const lastFormRef = useRef<TripPlanForm | null>(null);
 
@@ -30,11 +30,11 @@ export const RoutePlannerProvider = ({ children }: { children: React.ReactNode }
     try {
       const args = {
         form,
-        excludedPlaceIds: removedPlaceIds,                   // reuse the current set
-        onProgress: (p: RouteProgress) => setProgress(p),   // <-- typed
+        excludedPlaceIds: removedPlaceIds,
+        onProgress: (p: RouteProgress) => setProgress(p),
       };
 
-      const result = await calculateRoute(args);            // <-- fixes overload
+      const result = await calculateRoute(args);
 
       setRoute(result.stops);
       setTopSuggestions(result.topSuggestions);
@@ -94,7 +94,7 @@ const removeSuggestedStop = useCallback(async (placeId: string) => {
     // If none available, simply remove the stop
     if (!nextSuggestion) return [...curr.slice(0, idx), ...curr.slice(idx + 1)];
 
-    const replacement = courseToStop(nextSuggestion); // ⭐ keeps rating/reviews
+    const replacement = courseToStop(nextSuggestion);
     const nextRoute = [...curr];
     nextRoute[idx] = replacement;
     return nextRoute;
@@ -106,7 +106,7 @@ const removeSuggestedStop = useCallback(async (placeId: string) => {
     setSummary(null);
     setTopSuggestions([]);
     setRemovedPlaceIds(new Set());
-    setProgress(null);                   // <-- also clear progress
+    setProgress(null);
     lastFormRef.current = null;
   }, []);
 
@@ -115,7 +115,7 @@ const removeSuggestedStop = useCallback(async (placeId: string) => {
       value={{
         route,
         loading,
-        progress,                         // <-- expose progress
+        progress,
         planRoute,
         summary,
         topSuggestions,
