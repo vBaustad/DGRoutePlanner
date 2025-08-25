@@ -1,10 +1,10 @@
-import { PlannerForm } from "./PlannerForm";
-import { MapPreview } from "./MapPreview";
-import { HelpSection } from "./HelpSection";
-import { TripStopsOverview } from "./TripStopsOverview";
-import { useRoutePlanner } from "../hooks/useRoutePlanner";
-import { usePageMeta } from "../utils/usePageMeta";
-import { usePlanner } from "../hooks/usePlanner";
+import { PlannerForm } from "./route-planner/components/PlannerForm";
+import { MapPreview } from "./route-planner/components/MapPreview";
+import { HelpSection } from "../features/route-planner/components/HelpSection";
+import { TripStopsOverview } from "./route-planner/components/TripStopsOverview";
+import { useRoutePlanner } from "../features/route-planner/hooks/useRoutePlanner";
+import { usePageMeta } from "../components/usePageMeta";
+import { usePlanner } from "../features/route-planner/hooks/usePlanner";
 
 export function RoutePlanner() {
   const { route } = useRoutePlanner();

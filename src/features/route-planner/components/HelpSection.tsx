@@ -1,4 +1,4 @@
-import { AdSlot } from "../components/AdSlot";
+import { AdSlot } from "../../../components/AdSlot";
 import { useMemo } from "react";
 
 export function HelpSection() {

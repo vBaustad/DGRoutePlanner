@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { PlannerContext } from "../context/PlannerContext";
-import type { TripPlanForm } from "../types/TripPlanForm";
-import type { PlannerContextType, Step, Stop } from "../types/PlannerTypes";
+import { PlannerContext } from "../features/route-planner/context/PlannerContext";
+import type { TripPlanForm } from "../features/route-planner/types/TripPlanForm";
+import type { PlannerContextType, Step, Stop } from "../features/route-planner/types/PlannerTypes";
 
 // Local alias for the form's stop shape (no isSuggested)
 type FormStop = Omit<Stop, "isSuggested">;

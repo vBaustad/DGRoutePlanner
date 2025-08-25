@@ -3,10 +3,11 @@ import { fetchGeocode } from "./geocode";
 import type { TripPlanForm } from "../types/TripPlanForm";
 import type { Stop, DiscGolfCourse } from "../types/PlannerTypes";
 import { fetchCoursesNearby } from "./fetchCoursesNearby";
-import { deduplicateCourses } from "./deduplicateCourses";
+import { deduplicateCourses } from "../utils/deduplicateCourses";
 import { filterByDrivingDetour } from "./filterByDetour";
 import { orderByGoogleDirections } from "./orderByGoogleDirections";
-import { courseToStop } from "./courseToStop";
+import { courseToStop } from "../utils/courseToStop";
+import { getRouteTotalsForStops } from "./getRouteTotalForStops";
 
 export type PlannerMode = "full" | "suggestionsOnly";
 
@@ -47,7 +48,6 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
     ? { form: arg, excludedPlaceIds: new Set<string>(), mode: "full" }
     : { form: arg.form, excludedPlaceIds: arg.excludedPlaceIds ?? new Set<string>(), mode: arg.mode ?? "full", onProgress: arg.onProgress };
 
-  // tiny helper
   const ping = (p: RouteProgress) => { try { onProgress?.(p); } catch { /* ignore */ } };
 
   ping({ step: "init", message: "Warming up the chains…", percent: 0 });
@@ -62,10 +62,10 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
   } = form;
 
   const totalSuggestions = Math.max(1, tripDays * coursesPerDay);
+  const departureTime = new Date(); // use 'now' for live traffic; later you can expose in form
 
-  // ---------- 1) Directions: start → custom → end ----------
+  // ---------- 1) Directions: start → custom → end (for polyline only) ----------
   ping({ step: "geocode", message: "Finding your tee and basket…", percent: 8 });
-
 
   const startCoords = await fetchGeocode(startLocation);
   const endCoords = await fetchGeocode(endLocation);
@@ -86,6 +86,7 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
 
   ping({ step: "directions", message: "Plotting the fairway…", percent: 18 });
 
+  // Get a base route just to obtain the overview polyline for scanning.
   const directionsService = new google.maps.DirectionsService();
   const directions = await new Promise<google.maps.DirectionsResult>((resolve, reject) => {
     directionsService.route(
@@ -107,16 +108,12 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
   });
 
   const route0 = directions.routes[0];
-  const legs = route0.legs;
-  const totalDistance = legs.reduce((sum, leg) => sum + (leg.distance?.value || 0), 0);
-  const totalDuration = legs.reduce((sum, leg) => sum + (leg.duration?.value || 0), 0);
+  const path = route0.overview_path;
 
   // ---------- 2) Discover courses along the polyline ----------
   ping({ step: "scanning", message: "Scouting courses along your line…", percent: 30 });
 
-  const path = route0.overview_path;
   const totalPoints = path.length;
-
   const numSamples = Math.max(totalSuggestions * 3, 24);
   const interval = Math.max(1, Math.floor(totalPoints / numSamples));
 
@@ -149,7 +146,7 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
 
   ping({ step: "filtering", message: "Checking detours (no wild goose chases)…", percent: 50 });
 
-  // Keep only courses whose one‑way DRIVING time from the route ≤ maxDetourMinutes
+  // Keep only courses whose one-way DRIVING time from the route ≤ maxDetourMinutes
   uniqueCourses = await filterByDrivingDetour(uniqueCourses, path, maxDetourMinutes);
 
   // Retry lightly if empty (denser scan + bigger radius, still ≤ 50k)
@@ -173,7 +170,6 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
   }
 
   if (uniqueCourses.length > 0 && import.meta.env.PROD) {
-    // not a user‑visible step; no ping needed
     await fetch("/api/add-courses", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -208,6 +204,10 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
   // ---------- 4) Suggestions-only early return ----------
   if (mode === "suggestionsOnly") {
     ping({ step: "finalize", message: "Suggestions locked. Ready when you are! 🥏", percent: 100 });
+
+    // Use live totals from Google for the current base stops
+    const { totalDistance, totalDuration } = await getRouteTotalsForStops(baseStops, departureTime);
+
     return {
       stops: baseStops,
       totalDistance,
@@ -220,6 +220,7 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
   // ---------- 5) Let Google Directions optimize the order ----------
   ping({ step: "optimizing", message: "Asking Google to shave off a few minutes…", percent: 80 });
   const optimized = await orderByGoogleDirections(startCoords, endCoords, selected);
+  // If you extend orderByGoogleDirections to accept drivingOptions, pass departureTime there too.
 
   // ---------- 6) Build final stop list ----------
   const finalStops: Stop[] = [
@@ -230,11 +231,14 @@ export async function calculateRoute(arg: TripPlanForm | PlannerArgs): Promise<P
 
   ping({ step: "finalize", message: "Bag packed. Route ready. Let’s roll! 🚗💨", percent: 100 });
 
-  // ---------- 7) Return ----------
+  // ---------- 7) Live totals for FINAL route ----------
+  const { totalDistance, totalDuration } = await getRouteTotalsForStops(finalStops, departureTime);
+
+  // ---------- 8) Return ----------
   return {
     stops: finalStops,
-    totalDistance,
-    totalDuration,
+    totalDistance,   // meters
+    totalDuration,   // seconds (live traffic when helper uses duration_in_traffic)
     discoveredCourses: uniqueCourses,
     topSuggestions: pool,
   };

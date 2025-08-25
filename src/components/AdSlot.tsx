@@ -1,4 +1,3 @@
-// AdSlot.tsx
 import { useEffect, useRef } from "react";
 
 declare global {
@@ -6,12 +5,12 @@ declare global {
 }
 
 type Props = {
-  slot: string;                   // your data-ad-slot
+  slot: string;
   className?: string;
-  width?: number | string;        // for fixed-size units (e.g., 160)
-  height?: number | string;       // for fixed-size units (e.g., 600)
-  responsive?: boolean;           // true -> responsive (auto)
-  test?: boolean;                 // true in dev
+  width?: number | string;
+  height?: number | string;
+  responsive?: boolean;
+  test?: boolean;
 };
 
 export function AdSlot({
@@ -39,15 +38,12 @@ export function AdSlot({
 
     try {
       window.adsbygoogle.push({});
-    } catch (err) {
-      // swallow in dev / StrictMode double-mount
-      // console.debug("adsbygoogle push skipped", err);
+    } catch (err) {      
+      console.debug("adsbygoogle push skipped", err);
     }
   }, [slot, responsive, test]); // repush if these change
 
-  // Style logic:
-  // - responsive: let AdSense control size; display:block is enough
-  // - fixed: set explicit width/height to match the created unit
+
   const style: React.CSSProperties = responsive
     ? { display: "block" }
     : { display: "block", ...(width ? { width } : {}), ...(height ? { height } : {}) };
