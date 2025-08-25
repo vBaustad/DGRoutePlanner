@@ -1,7 +1,7 @@
 // provider/RoutePlannerProvider.tsx
 import { useState, useRef, useCallback } from "react";
 import { RoutePlannerContext } from "../context/RoutePlannerContext";
-import { calculateRoute } from "../features/RoutePlanner/CalculateRoute";
+import { calculateRoute } from "../utils/calculateRoute";
 import type { TripPlanForm } from "../types/TripPlanForm";
 import type {
   Stop,

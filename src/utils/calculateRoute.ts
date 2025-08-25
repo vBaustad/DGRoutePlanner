@@ -1,12 +1,12 @@
 // features/RoutePlanner/CalculateRoute.ts
-import { fetchGeocode } from "../../utils/geocode";
-import type { TripPlanForm } from "../../types/TripPlanForm";
-import type { Stop, DiscGolfCourse } from "../../types/PlannerTypes";
-import { fetchCoursesNearby } from "../../utils/fetchCoursesNearby";
-import { deduplicateCourses } from "../../utils/deduplicateCourses";
-import { filterByDrivingDetour } from "../../utils/filterByDetour";
-import { orderByGoogleDirections } from "../../utils/orderByGoogleDirections";
-import { courseToStop } from "../../utils/courseToStop";
+import { fetchGeocode } from "./geocode";
+import type { TripPlanForm } from "../types/TripPlanForm";
+import type { Stop, DiscGolfCourse } from "../types/PlannerTypes";
+import { fetchCoursesNearby } from "./fetchCoursesNearby";
+import { deduplicateCourses } from "./deduplicateCourses";
+import { filterByDrivingDetour } from "./filterByDetour";
+import { orderByGoogleDirections } from "./orderByGoogleDirections";
+import { courseToStop } from "./courseToStop";
 
 export type PlannerMode = "full" | "suggestionsOnly";
 
