@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { CourseDiscoveryContext } from "../context/CourseDiscoveryContext"
-import { fetchCoursesNearby } from "../utils/fetchCoursesNearby"
-import type { DiscGolfCourse } from "../types/PlannerTypes"
+import { CourseDiscoveryContext } from "../features/route-planner/context/CourseDiscoveryContext"
+import { fetchCoursesNearby } from "../features/route-planner/services/fetchCoursesNearby"
+import type { DiscGolfCourse } from "../features/route-planner/types/PlannerTypes"
 
 export const CourseDiscoveryProvider = ({ children }: { children: React.ReactNode }) => {
   const [courses, setCourses] = useState<DiscGolfCourse[]>([])

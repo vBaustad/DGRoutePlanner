@@ -1,8 +1,9 @@
+// features/RoutePlanner/TripStopsOverview.tsx
 import { useMemo, useState, useCallback } from "react";
 import { usePlanner } from "../hooks/usePlanner";
 import { useRoutePlanner } from "../hooks/useRoutePlanner";
 import type { Stop } from "../types/PlannerTypes";
-import { TripSummaryBar } from "../components/TripSummaryBar";
+import { TripSummaryBar } from "./TripSummaryBar";
 
 export function TripStopsOverview() {
   const { form, setForm, clearStops, setStep } = usePlanner();
@@ -75,7 +76,7 @@ export function TripStopsOverview() {
     <div
       className="
         rounded-lg border border-base-200 bg-white p-6 shadow-sm
-        flex flex-col min-h-0 overflow-hidden        
+        flex flex-col min-h-0 overflow-hidden
         h-[calc(90dvh-90px)]
       "
     >
@@ -160,16 +161,8 @@ export function TripStopsOverview() {
           </div>
         ))}
       </div>
-
-      {(startLocation || endLocation || stopsToRender.length > 0) && (
-        <div className="pt-3 text-right border-t border-base-200 mt-3">
-          <button onClick={resetPlanner} className="btn btn-sm btn-outline">
-            🔄 Start Over
-          </button>
-        </div>
-      )}
-      
-        <TripSummaryBar className="mt-4" />
+      {/* Summary bar with Start Over hooked in */}
+      <TripSummaryBar className="mt-4" onStartOver={resetPlanner} />
     </div>
   );
 }
