@@ -14,222 +14,108 @@ export type Guide = {
 };
 
 export const guides: Guide[] = [
+  // ————————————————————————————————————————————————————————————————————————
+  // HOW-TO: Export trips
   {
     slug: "export-trip-google-maps-gpx",
     title: "Export Your Trip to Google Maps & GPX",
     description:
-      "Exactly how to export your planner route to Google Maps, GPX, and JSON — with waypoint limits, live-traffic time, and troubleshooting.",
+      "Learn how to take your disc golf road trip with you: export routes to Google Maps, GPX for Garmin or mobile apps, and JSON for backups and spreadsheets. Includes limits, troubleshooting, and pro tips.",
     date: "2025-08-25",
     updated: "2025-08-25",
     category: "How-to",
     tags: ["Google Maps", "GPX", "Export", "Navigation"],
-    // cover: "/assets/images/guides/export-hero.jpg",
+    cover: "/assets/BlogImages/table-with-map.jpg",
     body: `
-Planning a road trip is half the fun — taking it with you is the other half. This guide shows you **how to export your Disc Golf Route Planner trip** to **Google Maps**, **GPX** (for Garmin and mobile nav apps), and a simple **JSON** file you can save or share.
+One of the most exciting moments in planning a disc golf road trip is when your route finally comes together. You’ve set your start and end points, picked some promising courses, and now you want to take it with you. That’s where exporting comes in. This guide will walk you through exporting your trip into Google Maps, GPX files for navigation apps like Garmin, and JSON for archiving or sharing with other tools.
 
----
+### Why exporting matters
+The planner is where you design your trip — but the real world is where you live it. Exporting bridges that gap. Whether you want to navigate turn-by-turn in Google Maps, load the route into your Garmin for offline play, or save a machine-readable copy for later, there’s an export option that fits.
 
-## TL;DR
-- For **Google Maps**, use **Share → Copy Google Maps link**.  
-- For **Garmin / mobile nav apps**, use **Share → Export GPX**.  
-- If your trip has **more than 25 total points**, Google Maps will refuse it; **use GPX** or split the trip.
+### Google Maps export
+For most people, the simplest option is Google Maps. After planning your route, open the summary bar and choose **Share / Export → Copy Google Maps link**. Paste it into your browser, share it with friends, or open it directly on your phone. Google Maps supports live traffic, which means your estimated times will stay realistic. 
 
----
+The catch? Google Maps limits you to 25 points per trip — that’s your start, end, plus 23 waypoints. Longer trips won’t fit in one link. If you’re over the limit, you’ll need to split your journey into multiple maps or export as GPX instead.
 
-## Google Maps export (step-by-step)
-1. Plan your route as normal (start, end, custom courses).  
-2. Open the **summary bar** at the bottom.  
-3. Click **Share** → **Copy Google Maps link**.  
-4. Paste the link into your browser or send it to your travel buddies.
+### GPX export
+GPX files are the gold standard for serious road-trippers. They work offline, they’re supported by Garmin devices and dozens of mobile apps, and they aren’t bound by Google’s 25-point cap. To export, choose **Share / Export → Export GPX** and save the file. From there, you can import it into apps like OsmAnd, Locus Map, or Guru Maps.
 
-**Good to know**
-- Google Maps caps a single route at **25 total points** (origin + destination + **23** waypoints).  
-- We include your **departure time** so **ETA reflects live traffic** where available.
-- If you reorder or add stops in Google Maps, it won’t sync back to the planner (one-way export).
+Keep in mind that some apps will try to simplify or re-route your GPX file. Look for settings like “follow roads” or “snap to roads” to preserve the original plan. And always keep a backup in cloud storage for easy access.
 
-### What if my trip is longer than 25 points?
-You’ve got three options:
-- **Use GPX** instead (no 25-point cap in the file itself).
-- **Split the trip** into multiple Maps links (by day or region).
-- **Group minor detours** into one stop in the planner.
+### JSON export
+Finally, there’s JSON. It’s not glamorous, but it’s incredibly useful. Exporting your trip as JSON gives you a raw list of stops, complete with names, coordinates, and trip totals. This is ideal if you want to build spreadsheets, archive past adventures, or integrate the data into your own tools.
 
----
+### Putting it together
+- Use **Maps** for quick sharing and live traffic.  
+- Use **GPX** for reliability, offline navigation, and longer trips.  
+- Use **JSON** for automation or archiving.
 
-## GPX export (Garmin & mobile)
-GPX is a universal route/waypoint format used by **Garmin (BaseCamp/Explore)**, **OsmAnd**, **Locus Map**, **Guru Maps**, and others. It works **offline** once the file is on your device.
-
-**Export**
-1. Open the summary bar.  
-2. Click **Share** → **Export GPX** to download.  
-3. Import it into your navigation app.
-
-**Tips**
-- If your app asks “**route** vs **waypoints**,” pick **route** for turn-by-turn.  
-- Some apps may **simplify** or **re-route** a GPX. Look for options like *“follow roads”* or *“snap to roads.”*
-- Keep a backup in cloud storage for easy access on the road.
-
----
-
-## JSON export (for spreadsheets/automation)
-Use **Share → Download JSON** if you want a raw list of stops (name, lat/lng, optional place IDs) plus trip totals. Great for:
-- Archiving trips
-- Spreadsheets and custom tools
-- Sharing a machine-readable plan
-
----
-
-## Known limits & workarounds
-- **Google Maps 25-point limit** → split by day or prefer GPX.  
-- **Time mismatch** → opening the link later may use *current* traffic.  
-- **Private/seasonal roads** → check app settings (avoid ferries/tolls/highways).  
-- **Very long trips** → GPX is more portable and robust.
-
----
-
-## FAQ
-
-**Why does time change when I open the Google Maps link?**  
-We export with your departure time; opening later can use *current* traffic.
-
-**Can I edit the route after export?**  
-Yes. Maps can reorder/drag; GPX apps can add waypoints or re-route.
-
-**Best format to share?**  
-**Maps link** for fast sharing; **GPX** for offline devices and repeatability.
-
-**How do I keep things in sync?**  
-Treat the planner as your **source of truth** and re-export after edits.
+By choosing the right export format, you make sure your carefully planned disc golf adventure doesn’t just stay on the screen — it comes with you onto the road.
 `
   },
 
   // ————————————————————————————————————————————————————————————————————————
-  // GLOBAL HOW-TO: Build a disc golf road trip anywhere
+  // GLOBAL HOW-TO
   {
     slug: "build-a-disc-golf-road-trip-anywhere",
     title: "Build a Disc Golf Road Trip Anywhere (Step by Step)",
     description:
-      "A repeatable method to plan great days in any country: corridor first, detour window, course quality, and realistic timing.",
+      "A repeatable 5-step method for planning disc golf road trips in any country. Learn how to define your corridor, set detour windows, balance quality with pacing, and sanity-check timing.",
     date: "2025-08-25",
     category: "How-to",
     tags: ["Planning", "Itinerary", "Beginners", "Worldwide"],
-    // cover: "/assets/images/guides/plan-anywhere.jpg",
+    cover: "/assets/BlogImages/map-in-car.jpg",
     body: `
-You don’t need local knowledge to plan a **great** disc golf trip. Use this 5-step method anywhere in the world.
+Planning a disc golf road trip doesn’t require insider knowledge or local contacts. What you need is a method — a simple framework that works just as well in Norway as it does in North Carolina. This guide walks you through a five-step process to build great trips anywhere in the world.
 
----
+### Step 1: Draw your corridor
+Start with the basics: your starting point and destination. This is your corridor — the backbone of your trip. Adding courses too early is a common mistake. By sketching your corridor first, you create a structure that keeps the trip realistic. If you’re doing a loop, set round-trip mode so you’ll end up where you started. For longer trips, divide your corridor into natural chunks for overnight stays.
 
-## 1) Draw your corridor
-Enter your **start** and **end**. This creates a baseline driving line and a total time. Don’t add courses yet.
+### Step 2: Set your detour window
+How far are you willing to wander off your main line for a good course? This is the most powerful setting in the planner. For most groups, 30 to 45 minutes is the sweet spot. It balances quality with convenience. Short on time? Keep detours at 15 to 25 minutes. Chasing a bucket-list course? Stretch to 45–60 minutes, but accept that you’ll play fewer total rounds.
 
-**Pro tip:** If you’re doing a loop, enable round-trip (same start and end) or pick a midpoint overnight.
+### Step 3: Decide your pace
+Disc golf trips aren’t just about miles — they’re about energy. New groups are usually happiest with one or two rounds per day. Experienced crews with long summer daylight might handle two or three. Tournament prep days are usually better with just one round plus practice. The goal is to finish each day tired but not exhausted, ready to enjoy the next.
 
----
+### Step 4: Focus on quality
+The planner ranks courses by a mix of ratings and review counts, weighted by detour time. That means a 4.4 course with 200 reviews may be a safer bet than a 4.9 course with only 8. But numbers aren’t everything. If you know your group prefers wooded technical courses or wide-open bombers, adjust accordingly. Removing a suggestion instantly replaces it with the next-ranked option.
 
-## 2) Pick a detour window
-Set **Max detour** to **30–45 minutes**. This is the sweet spot for finding **better-than-average** courses without turning your trip into a scavenger hunt.
+### Step 5: Sanity-check your timing
+Finally, reality check your plan. The summary bar gives you estimated drive times, but real-world days are longer. Add 15–20 minutes per course for parking and warm-up. Add half an hour for food and photos. If the summary says four hours of driving, your day will likely feel like six to eight. Front-load tough courses early while you have energy, and save shorter, easier layouts for the afternoon.
 
-- Short on time? Try 15–25 minutes.
-- Chasing bucket-list courses? Go 45–60 minutes but reduce the total number of courses.
-
----
-
-## 3) Choose a daily pace
-Realistic pacing beats wish lists.
-
-- New to road-trip golf → **1–2 courses/day**  
-- Experienced group in summer daylight → **2–3 courses/day**  
-- Tournament practice days → **1 course + putting/driving field**
-
-Use the planner’s **courses per day** to get a sensible distribution.
-
----
-
-## 4) Optimize for quality, then logistics
-The planner surfaces candidates by **rating + review count** and keeps them **close to your line**.
-
-A reliable order of preference:
-1. High rating **and** lots of reviews  
-2. Good access (parking, trailhead, not a maze of private roads)  
-3. Fits your vibe (wooded vs open, elevation, length)
-
-If a suggestion isn’t your style, **remove** it — the planner replaces it from a ranked pool.
-
----
-
-## 5) Sanity-check timing
-- The summary shows **total drive** and **total time** with live/typical traffic.  
-- Add **buffer** for food, photos, and one wrong turn per city.  
-- Front-load energy: toughest/longest course **before** afternoon slump.
-
----
-
-## Day structure templates
-
-### Ratings-first day (fast track)
-- Morning: highest-rated within detour window  
-- Lunch: near corridor  
-- Afternoon: second-highest rated, **shorter** layout
-
-### Scenic mix
-- Morning: open, forgiving warm-up  
-- Midday: wooded technical course (shade in heat)  
-- Afternoon: short, fun finisher near your stay
-
----
-
-## Export & share
-- **Google Maps** for quick links  
-- **GPX** for devices/offline  
-- **JSON** for collaboration or spreadsheets
-
-That’s it — apply this recipe in **any region**, and you’ll build days that play well and actually fit in real life.
+### The result
+By combining a clear corridor, a realistic detour window, a sensible pace, and a focus on quality, you end up with days that don’t just look good on paper — they actually work in practice. That’s the secret to building disc golf trips anywhere: a method you can repeat in any country, with any group, and still have a great time.
 `
   },
 
   // ————————————————————————————————————————————————————————————————————————
-  // HOW-TO: How selections work
+  // HOW-TO: Algorithm
   {
     slug: "how-dgrouteplanner-picks-courses",
     title: "How DGRoutePlanner Picks Courses (So You Can Pick Better)",
     description:
-      "What the suggestions mean: ratings, review reliability, detour time, and Google routing — plus quick tweaks to get the exact trip you want.",
+      "Understand how course suggestions are ranked: ratings, reviews, detour practicality, and routing. Learn how to tweak the algorithm for the exact trip you want.",
     date: "2025-08-25",
     category: "How-to",
     tags: ["Algorithm", "Ratings", "Detour", "Tips"],
-    // cover: "/assets/images/guides/how-picks-courses.jpg",
+    cover: "/assets/BlogImages/yellow-basket-in-forest.jpg",
     body: `
-We favor **courses people actually love** — and that don’t wreck your timetable.
+When the planner suggests a course, it’s not random. It’s the result of an algorithm designed to balance quality and practicality. Understanding how it works will help you make smarter choices.
 
----
+### Quality comes first
+We start with ratings, but we don’t just look at the number of stars. A course with 4.4 stars and 200 reviews often provides a more reliable picture than a 4.9 with only eight. The algorithm favors courses with consistent, widespread approval.
 
-## The short version
-- **Quality:** star rating with **diminishing returns** from review count (lots of 4.4s can beat a single 4.9).  
-- **Practicality:** **detour time** from your corridor, not as-the-crow-flies.  
-- **Logistics:** Google’s routing handles traffic patterns and road types.  
-- **Cap:** We respect Google’s **23 waypoint** limit for one link.
+### Detour time matters
+Next, we factor in how far off your main route a course is. Distance “as the crow flies” doesn’t mean much if the drive is down winding rural roads. We use Google’s routing to measure actual detour time, including road types and traffic where available.
 
----
+### Review reliability
+A glowing rating on a brand-new course can be misleading. That doesn’t mean new courses aren’t worth playing — but it does mean you should skim photos and comments before trusting the stars. Ratings are a signal, not the whole story.
 
-## What you control
-- **Max detour**: the biggest knob. Lower = faster days; higher = more “destination” courses.  
-- **Courses per day**: controls pacing.  
-- **Remove/Replace**: don’t hesitate — the pool is ranked.
+### Your controls
+The algorithm isn’t rigid. You can tweak it by adjusting your maximum detour, your courses-per-day setting, and by removing or replacing suggestions. Each change reshuffles the ranked pool to surface new options.
 
----
-
-## When ratings lie
-- **Small sample size**: A 4.8 with 8 reviews can be flukey.  
-- **Recency bias**: New courses may be under-reviewed but great — skim photos and comments.  
-- **House rules**: Private hours, winter tees, or seasonal closures can affect playability more than stars.
-
----
-
-## Quick tweak recipes
-- Want **fewer cities**? Lower detour; the algorithm clings to the main corridor.  
-- Want **premium stops**? Raise detour to 45–60 min and set 1–2 courses/day.  
-- Want **family-friendly**? Prefer shorter, open layouts with parking and amenities in descriptions.
-
-Use suggestions as a **strong starting point**, then nudge to taste.
+### When to override
+Sometimes numbers lie. Seasonal closures, private rules, or local quirks can matter more than ratings. Use the planner’s suggestions as a strong starting point, then add your own judgment. That way, you’ll get the best of both worlds: the efficiency of automation plus the wisdom of experience.
 `
   },
 
@@ -239,47 +125,27 @@ Use suggestions as a **strong starting point**, then nudge to taste.
     slug: "multi-day-disc-golf-trip-pacing",
     title: "Pacing a Multi-Day Disc Golf Trip (Without Burning Out)",
     description:
-      "Time budgets, daylight math, and recovery — build days that feel great on day 1 and still fun on day 4.",
+      "Learn how to structure your days on the road. Balance energy, travel time, and recovery so your trip feels fun from start to finish.",
     date: "2025-08-25",
     category: "How-to",
     tags: ["Pacing", "Time", "Daylight", "Fitness"],
-    // cover: "/assets/images/guides/pacing-hero.jpg",
+    cover: "/assets/BlogImages/disc-golf-shot-night-time.jpg",
     body: `
-A perfect first day can ruin day three if you overdo it. Here’s a simple pacing framework that works.
+The first day of a disc golf trip is often electric. Energy is high, throws feel sharp, and the excitement of the journey pushes you forward. But without smart pacing, that energy can burn out by day three. Here’s how to keep things fun all the way through.
 
----
+### Balance your effort
+Think of your energy like a budget. The 40/40/20 rule is a good starting point: spend 40% on your first course, when you’re freshest. Use another 40% on the middle round, where the real work happens. Save the final 20% for an easier finisher. If you’re only playing two courses, think of it as 60/40.
 
-## The 40/40/20 rule
-- **40%** of your energy on the **first course** (freshest throws).  
-- **40%** on the **middle** (the real workout).  
-- **20%** on the **finisher** (choose a forgiving layout).
+### Respect the clock
+Driving times in the planner are accurate, but they don’t include all the friction of the day. Parking, warm-ups, and navigating trailheads all add minutes. Cities slow you down too. Add ten minutes for every one you drive through. And don’t forget meals and photo stops. If the planner says four hours of driving, expect six to eight hours door-to-door.
 
-If you only play two courses, split **60/40**.
+### Recover as you go
+Alternate longer layouts with shorter ones. Stretch after each round. Drink water before you’re thirsty. These small habits add up, and they’re the difference between arriving at day four excited versus limping through.
 
----
+### Weather is part of pacing
+Wind, rain, and heat change the equation. In wind, look for wooded lines. In rain, favor short walk-ins and good drainage. On hot days, front-load your schedule before midday sun. Smart course choice is as much about energy as it is about design.
 
-## Time math that holds up
-- Add **15–20 minutes** per course for parking, warm-up, and navigation.  
-- Add **10 minutes** per city you drive through.  
-- Pad **30–45 minutes** per day for meals/photos.
-
-If the summary bar says **3.8 h** driving, your actual day is probably **6–8 hours** door-to-door.
-
----
-
-## Recovery beats hero days
-- Alternate long and short layouts.  
-- Stretch after the round, especially hamstrings and lower back.  
-- Hydrate early; running dry kills accuracy.
-
----
-
-## Weather pivots
-- **Windy?** Prefer wooded lines.  
-- **Rainy?** Favor good drainage and short walk-ins.  
-- **Hot?** Aim for shade around midday.
-
-A little planning here saves a lot of frustration later.
+The key to pacing isn’t discipline — it’s foresight. Build days that your future self will thank you for.
 `
   },
 
@@ -289,181 +155,125 @@ A little planning here saves a lot of frustration later.
     slug: "disc-golf-road-trip-packing-list",
     title: "Disc Golf Road-Trip Packing List (Everything You Actually Use)",
     description:
-      "A road-tested, compact packing list for cars, vans, and flights — including rain plans and quick repairs.",
+      "Pack smarter with this road-tested disc golf packing list. Covers essentials, weather kits, tools, car gear, and flight notes — all explained in plain English.",
     date: "2025-08-25",
     category: "How-to",
     tags: ["Packing", "Gear", "Vanlife", "Checklist"],
-    // cover: "/assets/images/guides/packing-hero.jpg",
+    cover: "/assets/BlogImages/disc-golf-bag.jpg",
     body: `
-You don’t need the pro shop in your trunk. Pack this and you’re covered.
+Packing for a disc golf road trip is a balancing act. Take too much and you’ll waste time digging through gear you never use. Take too little and you’ll regret it the first time it rains. After years of trips, this is the list that consistently works — and why.
 
----
+### Start with the bag
+Don’t overcomplicate it. Six to ten discs you truly trust are better than a trunk full of experiments. Stick with molds you know, so your throws feel consistent day after day. Add a mini, a marker, and a rule card so you’re covered for casual rounds or sanctioned play.
 
-## Bag essentials
-- 6–10 discs you **trust** (don’t learn molds on the road)  
-- Mini, marker, rule card  
-- Towel (microfiber + small cotton “grip” towel)  
-- Water 1–2 L per person
+### Prepare for the weather
+Weather will challenge you more than any course. A light rain shell, a hat, and a spare pair of socks go further than most people expect. If it’s wet, a garbage bag or seat cover can save your car. In cold climates, toss in a couple of hand warmers. They’re cheap, light, and worth their weight in gold on a frosty morning.
 
-## Weather kit
-- Light rain shell, hat, spare socks  
-- Garbage bag or seat cover for wet rounds  
-- Hand warmers in cold months
+### Tools and quick fixes
+You don’t need a workshop — just a few key items. A Sharpie, some duct tape flattened into a wallet-sized card, and a handful of zip ties can fix most small problems. A small multi-tool or knife covers the rest. First aid should be minimal but functional: something for blisters, scrapes, and headaches.
 
-## Tools & fixes
-- Sharpie, duct tape (flat-packed), zip ties  
-- Small multi-tool or knife  
-- First-aid basics (blister, scrape, headache)
+### Life in the car or van
+Road trips are as much about the car as the courses. Mount your phone securely, carry extra cables, and keep a power bank handy. A headlamp or flashlight helps when rounds run long. And don’t underestimate the joy of a cooler with snacks — five minutes after the car is the best time to refuel.
 
-## Car/van
-- Phone mount + cable, power bank  
-- Headlamp or small flashlight  
-- Cooler/snacks; eat within 5 minutes of the car
+### Flights and airports
+Flying adds a layer of complexity. Pack discs in your carry-on with a towel around the rims. Tools and liquids go in checked luggage. It’s simple, but forgetting this can cause real headaches at security.
 
-## Flight-friendly notes
-- Pack discs in a carry-on with a towel around the rims.  
-- Check tools and liquids in the hold.
-
-Print this list into your bag and you’ll stop over-packing forever.
+Packing well doesn’t just make your trip easier. It frees your mind to focus on what matters: playing great courses, seeing new places, and enjoying the adventure.
 `
   },
 
   // ————————————————————————————————————————————————————————————————————————
-  // COURSE LIST: Worldwide trip ideas (non-region-specific)
+  // COURSE LIST
   {
     slug: "worldwide-disc-golf-road-trip-ideas",
     title: "Worldwide Disc Golf Road-Trip Ideas (Build-Your-Own)",
     description:
-      "Not a bucket-list of exact courses — a set of buildable, repeatable trip patterns you can drop into any country.",
+      "Inspiration for disc golf adventures worldwide. Use these flexible trip templates — city-to-mountains, coastlines, weekend loops, family combos — and let the planner fill in the details.",
     date: "2025-08-25",
     category: "Course List",
     tags: ["Worldwide", "Ideas", "Templates", "Itinerary"],
-    // cover: "/assets/images/guides/world-ideas.jpg",
+    cover: "/assets/BlogImages/disc-golf-warning-sign.jpg",
     body: `
-You don’t need a fixed list to get inspired. Use these **trip patterns** as modules and let the planner fill in the exact courses near you.
+You don’t need a fixed bucket-list to dream up a great trip. What you need are patterns — repeatable structures you can adapt anywhere. Here are a few that work in almost any country.
 
----
+### City to Mountains
+Start in a major city where flights and rentals are easy. Play a warm-up round nearby, then head toward the mountains for a scenic mid-trip highlight. Detour 25–35 minutes for the best courses without wrecking the schedule.
 
-## The City-to-Mountains
-- Start in a major city (easy flights, rentals, food).  
-- Two travel days, one **scenic** day in the middle.  
-- Detour **25–35 min** to balance quality and drive time.
+### Coastal Drift
+Follow a coastline and let the sea set the tone. Play the technical course at midday calm, then finish with something more relaxed. Windy days are inevitable — pick layouts that stay fun in gusts.
 
-## The Coastal Drift
-- Short hops along a coastline; favor **open, windy-proof** options.  
-- Start early, play the technical course at **midday calm**, then a fun finisher.
+### Festival Sandwich
+If your trip revolves around a concert, tournament, or event, frame it with courses on both sides. Keep detours short and parking easy, so the travel day doesn’t compete with the main attraction.
 
-## The Festival Sandwich
-- Tournament or concert in the middle; one course **before**, one **after**.  
-- Keep detours low (≤ 20 min) and pick **easy parking**.
+### Weekend Loop
+Not every trip is epic. Two days, two or three courses, out-and-back. Play one set on the way out, another on the way back. Export per-day GPX files and you’ve got a loop you can repeat whenever the urge strikes.
 
-## The Weekend Loop
-- 2 days, 2–3 courses total.  
-- Out-and-back with **different** courses each way.  
-- Export one GPX per day; super repeatable.
+### Friends and Family
+Balance the trip for mixed groups. One premium course per day keeps the players happy. A short, beginner-friendly layout keeps newcomers engaged. Choose parks with bathrooms and nearby food for comfort.
 
-## The Friends & Family
-- One premium course per day + a **short beginner-friendly** layout.  
-- Choose parks with bathrooms and nearby food.
-
-Mix and match. Anywhere with roads and baskets can host one of these.
+These templates aren’t rigid itineraries. They’re flexible frameworks. Add the planner’s ranked courses and you’ll have a trip that feels designed for you, anywhere in the world.
 `
   },
 
   // ————————————————————————————————————————————————————————————————————————
-  // ITINERARY: Oslo → Bergen (kept, expanded)
+  // ITINERARY
   {
     slug: "oslo-bergen-3-day-disc-golf-road-trip",
     title: "Oslo → Bergen: A 3-Day Disc Golf Road Trip",
     description:
-      "A scenery-packed itinerary with realistic drive windows, pacing tips, and course-day structure. Export links included.",
+      "A balanced three-day Oslo to Bergen itinerary with great courses, iconic scenery, and realistic drive times. Includes daily pacing and export tips.",
     date: "2025-08-25",
     updated: "2025-08-25",
     category: "Itinerary",
     tags: ["Norway", "Road Trip", "Itinerary"],
-    // cover: "/assets/images/guides/oslo-bergen-hero.jpg",
+    cover: "/assets/BlogImages/snowy-basket.jpg",
     body: `
-This 3-day Oslo → Bergen plan balances **great courses** with **iconic scenery** and **realistic drive times**. Use it as a template and tailor the exact courses with the planner’s suggestions.
+Norway is famous for fjords and mountains, but it also has some excellent disc golf. This three-day plan from Oslo to Bergen balances scenery with play, giving you realistic drive times and memorable courses along the way.
 
-> ✨ **Pro tip**: Set **Max detour** to **30–45 min** to surface the best-rated courses without blowing up your schedule.
+### The trip in numbers
+- Drive: 7–9 hours net  
+- Pace: 2 courses per day  
+- Best months: late spring to early autumn  
+- Export: GPX for reliability, Maps for sharing  
 
----
+### Day 1 — Oslo to Kongsberg
+Begin in Oslo with a warm-up course close to the city. By midday, head toward Drammen for a more challenging round, then finish with something technical near Kongsberg. Spend the night in Kongsberg and prepare the next day’s exports.
 
-## Trip snapshot
-- **Total drive**: ~7–9 h net (without detours)  
-- **Pace**: 2 courses/day (adjust to your group)  
-- **Good months**: late spring → early autumn  
-- **Exports**: GPX for reliability, Maps for quick sharing
+### Day 2 — Kongsberg to Odda
+Stop in Notodden to break up the morning drive. In the afternoon, the route toward Odda delivers some of the most scenic legs of the trip — allow time for photos. Play an elevation-heavy course before resting overnight in Odda.
 
----
+### Day 3 — Odda to Bergen
+Start with a shorter course near Voss to loosen up. In the afternoon, play a forgiving finisher as you approach Bergen. By evening, you’ll be celebrating in the city, GPX and Maps links shared with your group.
 
-## Day 1 — Oslo → Drammen → Kongsberg
-**Morning**: easy warm-up near Oslo (short detour).  
-**Midday**: Drammen area course with good access.  
-**Afternoon**: slightly more technical layout near Kongsberg.  
-**Evening**: overnight Kongsberg; prep tomorrow’s exports.
-
-## Day 2 — Kongsberg → Notodden → Odda
-**Morning**: Notodden stop to break the drive.  
-**Midday**: scenic leg toward Odda; photo breaks.  
-**Afternoon**: elevation and views; hydrate and stretch.  
-**Evening**: overnight Odda; check wind for Day 3.
-
-## Day 3 — Odda → Voss → Bergen
-**Morning**: shorter layout around Voss.  
-**Afternoon**: forgiving finisher on the Bergen approach.  
-**Evening**: celebrate, share Maps link and GPX with the group.
-
----
-
-## Export this itinerary
-Add **Oslo (start)** → your chosen **Drammen/Kongsberg/Notodden/Odda/Voss** stops → **Bergen (end)**.  
-Use **Share** to export Maps or GPX (one GPX per day is tidy).
-
----
-
-## Practical tips
-Weather changes fast; pack layers. Mark discs; save a backup course per day. Respect local rules and leave it cleaner than you found it.
+### Practical notes
+Weather in Norway changes quickly. Pack layers, mark your discs, and always have a backup course in mind. Respect local rules, and leave each course cleaner than you found it. With the right balance, this trip combines the best of Norway’s landscapes with the joy of disc golf.
 `
   },
 
   // ————————————————————————————————————————————————————————————————————————
-  // HOW-TO: Weather play
+  // HOW-TO: Weather
   {
     slug: "play-better-in-wind-and-rain",
     title: "Playing Better in Wind and Rain (Without Rebuilding Your Bag)",
     description:
-      "Shot selection, course choice, and tiny gear tweaks that make bad-weather rounds actually fun — and still on schedule.",
+      "Don’t cancel your round when the weather turns. Learn how to adapt to wind, rain, and heat with smart course choices, shot adjustments, and simple gear tweaks.",
     date: "2025-08-25",
     category: "How-to",
     tags: ["Weather", "Wind", "Rain", "Skills"],
-    // cover: "/assets/images/guides/weather-hero.jpg",
+    cover: "/assets/BlogImages/green-basket-fall-scenery.jpg",
     body: `
-When the forecast turns, don’t cancel — **pivot**.
+Bad weather doesn’t have to ruin your trip. With the right mindset and a few adjustments, wind and rain can add challenge instead of frustration.
 
----
+### Choose your battleground
+When it’s windy, wooded courses offer shelter and lower ceilings that reduce gust impact. In rain, favor layouts with good drainage, short walk-ins, and safe footing. On hot days, look for shaded tracks around midday and play open fields early or late.
 
-## Choose the right course
-- **Windy**: wooded lines and lower ceilings tame gusts.  
-- **Rainy**: courses with good drainage, short walk-ins, and safe footing.  
-- **Hot**: shade at midday; play open fields early or late.
+### Adjust your throws
+Wind changes everything. Into a headwind, throw more stable discs on lower lines. With a tailwind, choose understable plastic and give it height. Crosswinds demand aiming upwind and trusting the push. In rain, shorten your reachback and keep your tempo smooth — power is less important than control.
 
----
+### Make small gear tweaks
+You don’t need a whole new bag. Carry one grippy putter you trust when wet. Keep a cotton towel for grip and a microfiber for drying discs. Even a plastic bag or seat cover can make the ride between rounds far more comfortable.
 
-## Simple shot adjustments
-- Into wind: throw **more stable**, **lower**.  
-- Tailwind: throw **less stable**, give it height.  
-- Crosswind: aim on the **upwind** side and trust the push.  
-- In rain: shorten reachback; smooth tempo beats power.
-
----
-
-## Micro gear tweaks
-- One **grippy** putter you trust when wet.  
-- Small **cotton** towel for grip; microfiber for discs.  
-- Plastic bag or seat cover for soggy rides.
-
-The goal isn’t a perfect score — it’s a **good time** and a schedule that stays intact.
+Weather is just another variable — like elevation or trees. Plan for it, adjust to it, and your trip will keep rolling, rain or shine.
 `
   }
 ];

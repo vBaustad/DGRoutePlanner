@@ -10,8 +10,6 @@ import {
   Lightbulb,
   Info,
   AlertTriangle,
-  Share2,
-  Link as LinkIcon,
 } from "lucide-react";
 import { useMemo } from "react";
 
@@ -50,7 +48,6 @@ function relativeTimeFromNow(iso: string): string {
 const slugify = (s: string): string =>
   s.toLowerCase().replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-");
 
-/** Build a simple table-of-contents from markdown ## and ### headings */
 function buildToc(body: string) {
   const items: { level: 2 | 3; text: string; id: string }[] = [];
   for (const raw of body.split("\n")) {
@@ -105,19 +102,11 @@ export function GuidePage() {
   const timeAgo = relativeTimeFromNow(guide.updated ?? guide.date);
   const author = "DGRoutePlanner";
   const primaryTag = guide.tags?.[0];
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  //const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const toc = buildToc(guide.body);
 
-  // ---------- markdown renderers ----------
   let isFirstParagraph = true;
-
-  function Callout({
-    tone,
-    children,
-  }: {
-    tone: "tip" | "note" | "warn";
-    children: React.ReactNode;
-  }) {
+  function Callout({ tone, children }: { tone: "tip" | "note" | "warn"; children: React.ReactNode }) {
     const tones = {
       tip: { Icon: Lightbulb, box: "bg-accent/10 border-accent/40", icon: "text-accent" },
       note: { Icon: Info, box: "bg-info/10 border-info/40", icon: "text-info" },
@@ -165,199 +154,121 @@ export function GuidePage() {
     blockquote: (props) => {
       const raw = String(props.children ?? "");
       if (raw.startsWith("Tip:"))
-        return (
-          <Callout tone="tip">
-            <span className="font-medium">Tip:</span>
-            {raw.slice(4)}
-          </Callout>
-        );
+        return <Callout tone="tip"><span className="font-medium">Tip:</span>{raw.slice(4)}</Callout>;
       if (raw.startsWith("Note:"))
-        return (
-          <Callout tone="note">
-            <span className="font-medium">Note:</span>
-            {raw.slice(5)}
-          </Callout>
-        );
+        return <Callout tone="note"><span className="font-medium">Note:</span>{raw.slice(5)}</Callout>;
       if (raw.startsWith("Warning:"))
-        return (
-          <Callout tone="warn">
-            <span className="font-medium">Warning:</span>
-            {raw.slice(8)}
-          </Callout>
-        );
-      return (
-        <blockquote className="my-4 border-l-4 border-primary/30 pl-3 italic text-base-content/80" {...props} />
-      );
+        return <Callout tone="warn"><span className="font-medium">Warning:</span>{raw.slice(8)}</Callout>;
+      return <blockquote className="my-4 border-l-4 border-primary/30 pl-3 italic text-base-content/80" {...props} />;
     },
     code: ({ inline, ...props }: CodeProps) =>
-      inline ? (
-        <code className="px-1 py-0.5 rounded bg-base-200" {...props} />
-      ) : (
-        <code className="block p-3 rounded bg-base-200 overflow-x-auto text-sm" {...props} />
-      ),
-    img: (props: ImgProps) => {
-      const { className, ...rest } = props;
-      return (
-        <img
-          {...rest}
-          loading="lazy"
-          decoding="async"
-          className={`rounded-xl border border-base-300 shadow-sm my-6 w-full object-cover ${className ?? ""}`}
-        />
-      );
-    },
+      inline ? <code className="px-1 py-0.5 rounded bg-base-200" {...props} /> :
+        <code className="block p-3 rounded bg-base-200 overflow-x-auto text-sm" {...props} />,
+    img: (props: ImgProps) => (
+      <img {...props} loading="lazy" decoding="async"
+        className={`rounded-xl border border-base-300 shadow-sm my-6 w-full object-cover ${props.className ?? ""}`} />
+    ),
   };
 
   return (
-    <div className="bg-white rounded-lg py-14 sm:py-20">
-      {/* Outer width matches GuidesIndex */}
+    <div className="bg-[#F9FAF5] rounded-lg py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Title & meta block */}
+        
+        {/* Title & meta */}
         <header className="mx-auto max-w-4xl">
-          <p className="mb-2 text-xs">
-            <Link to="/guides" className="link">← Guides</Link>
+          {/* Back link */}
+          <p className="mb-4">
+            <Link
+              to="/guides"
+              className="inline-flex items-center gap-1 text-[#626F47] hover:text-[#4E5839] font-medium"
+            >
+              ← Back to Guides
+            </Link>
           </p>
 
-          <Link
-            to={`/guides?cat=${encodeURIComponent(guide.category)}`}
-            className="text-primary hover:text-base-content transition duration-300 ease-in-out text-sm"
-          >
-            {guide.category}
-          </Link>
+          {/* Title */}
+          <h1 className="mt-1 text-4xl font-bold text-[#3E462C]">{guide.title}</h1>
 
-          <h1 className="mt-1 text-4xl font-bold text-base-content">{guide.title}</h1>
-
-          <div className="py-4 text-sm text-base-content flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="py-4 text-sm text-[#3E462C] flex flex-wrap items-center gap-x-5 gap-y-2">
             <span className="flex items-center">
-              <Clock className="text-primary h-4 w-4" />
+              <Clock className="text-[#626F47] h-4 w-4" />
               <span className="ml-1">{timeAgo}</span>
             </span>
 
-            <span className="flex items-center hover:text-primary">
-              <User className="text-primary h-4 w-4" />
+            <span className="flex items-center">
+              <User className="text-[#626F47] h-4 w-4" />
               <span className="ml-1">{author}</span>
             </span>
 
             {primaryTag && (
-              <span className="flex items-center hover:text-primary">
-                <TagIcon className="text-primary h-4 w-4" />
+              <span className="flex items-center">
+                <TagIcon className="text-[#626F47] h-4 w-4" />
                 <span className="ml-1">{primaryTag}</span>
               </span>
             )}
+            {/* Category inline */}
+            <span className="inline-block rounded-full bg-[#626F47]/10 text-[#3E462C] px-2 py-0.5 text-xs font-medium">
+              {guide.category}
+            </span>
 
             <span className="opacity-50">•</span>
-            <span className="text-base-content/70">
+            <span className="text-[#626F47]/70">
               {fmtDate(guide.updated ?? guide.date)} · {mins} min read
             </span>
           </div>
-
-          {/* Share actions */}
-          <div className="mt-2 mb-6 flex gap-2">
-            <button
-              className="btn btn-sm btn-outline"
-              onClick={async () => {
-                try {
-                  const nav = navigator as Navigator & { share?: (d: ShareData) => Promise<void> };
-                  if (nav.share) {
-                    await nav.share({ title: guide.title, text: guide.description, url: shareUrl });
-                  } else {
-                    await navigator.clipboard.writeText(shareUrl);
-                  }
-                } catch (err) {
-                  console.warn("Share failed:", err);
-                }
-              }}
-            >
-              <Share2 className="h-4 w-4 mr-1" /> Share
-            </button>
-
-            <button
-              className="btn btn-sm btn-outline"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(shareUrl);
-                } catch (err) {
-                  console.warn("Copy failed:", err);
-                }
-              }}
-            >
-              <LinkIcon className="h-4 w-4 mr-1" /> Copy link
-            </button>
-          </div>
         </header>
 
-        {/* Optional cover */}
+
+        {/* Cover image */}
         {guide.cover && (
-          <div className="mx-auto max-w-4xl">
-            <img
-              src={guide.cover}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="w-full rounded-xl border border-base-300 shadow-sm object-cover"
-            />
+          <div className="mx-auto max-w-4xl mt-4">
+            <div className="aspect-[16/9] w-full overflow-hidden rounded-xl border border-[#626F47]/20 shadow-sm">
+              <img src={guide.cover} alt="" className="h-full w-full object-cover" />
+            </div>
           </div>
         )}
 
-        {/* Content area: wide main column + rail */}
-        <div className="mx-auto mt-8 grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
-          {/* Main column */}
-          <div className="min-w-0">
-            {/* Mobile Post navigation (only one nav overall) */}
-            {toc.length > 0 && (
-              <div className="mb-6 rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm lg:hidden">
-                <div className="text-sm font-semibold mb-2">Post navigation</div>
-                <ul className="list-disc pl-5 text-sm space-y-1">
-                  {toc.map((i) => (
-                    <li key={i.id} className={i.level === 3 ? "ml-4" : ""}>
-                      <a href={`#${i.id}`} className="link link-hover">
-                        {i.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Article body */}
-            <div id="article-top" className="prose max-w-none">
-              <ReactMarkdown components={mdComponents}>{guide.body}</ReactMarkdown>
-            </div>
-
-            {/* Tags footer */}
-            {guide.tags?.length ? (
-              <div className="mt-6 text-xs text-primary/90 font-medium space-x-1">
-                {guide.tags.map((t) => (
-                  <a
-                    key={t}
-                    href={`/guides?tag=${encodeURIComponent(t)}`}
-                    className="hover:text-base-content transition duration-300 ease-in-out"
-                  >
-                    #{t}
-                  </a>
+        {/* TOC under image */}
+        {toc.length > 0 && (
+          <div className="mx-auto max-w-4xl mt-6">
+            <div className="rounded-lg border border-[#626F47]/20 bg-[#F9FAF5] p-4 shadow-sm">
+              <div className="text-sm font-semibold mb-2 text-[#3E462C]">Post navigation</div>
+              <ul className="list-disc pl-5 text-sm space-y-1">
+                {toc.map((i) => (
+                  <li key={i.id} className={i.level === 3 ? "ml-4" : ""}>
+                    <button
+                      className="text-[#626F47] hover:underline"
+                      onClick={() => {
+                        const el = document.getElementById(i.id);
+                        if (el) {
+                          el.scrollIntoView({ behavior: "smooth", block: "start" });
+                          // optional: update hash in URL without page jump
+                          window.history.replaceState(null, "", `#${i.id}`);
+                        }
+                      }}
+                    >
+                      {i.text}
+                    </button>
+                  </li>
                 ))}
-              </div>
-            ) : null}
+              </ul>
+            </div>
           </div>
+        )}
 
-          {/* Right rail: sticky Post navigation on desktop */}
-          {toc.length > 0 && (
-            <aside className="hidden lg:block">
-              <div className="sticky top-24 rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm">
-                <div className="text-xs font-semibold uppercase tracking-wide text-base-content/60 mb-2">
-                  Post navigation
-                </div>
-                <ul className="text-sm space-y-1">
-                  {toc.map((i) => (
-                    <li key={i.id} className={i.level === 3 ? "ml-3" : ""}>
-                      <a href={`#${i.id}`} className="link link-hover">
-                        {i.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </aside>
+        {/* Article body */}
+        <div className="mx-auto max-w-4xl mt-8">
+          <div id="article-top" className="prose max-w-none">
+            <ReactMarkdown components={mdComponents}>{guide.body}</ReactMarkdown>
+          </div>
+          {guide.tags?.length && (
+            <div className="mt-6 text-xs text-[#626F47]/90 font-medium space-x-1">
+              {guide.tags.map((t) => (
+                <a key={t} href={`/guides?tag=${encodeURIComponent(t)}`} className="hover:text-[#3E462C] transition">
+                  #{t}
+                </a>
+              ))}
+            </div>
           )}
         </div>
       </div>

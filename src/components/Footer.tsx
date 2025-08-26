@@ -13,7 +13,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-gray-200 bg-white">
+    <footer className="shadow-inner bg-[#E6EED6]">
       <div className="container mx-auto px-4 py-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <div className="text-sm text-gray-600">
