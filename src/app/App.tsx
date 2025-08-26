@@ -11,7 +11,7 @@ export default function App() {
   const isProd = import.meta.env.PROD;
 
   return (
-    <div className="min-h-screen bg-base-300 relative flex flex-col">
+    <div className="bg-gradient-to-b from-[#F9FAF5] to-[#E6EED6] min-h-screen relative flex flex-col">
       {isProd && (
         <div className="hidden lg:block fixed left-0 top-[100px] z-30">
           <AdSlot slot="LEFT_SLOT_ID" width={160} height={600} />

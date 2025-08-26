@@ -246,7 +246,7 @@ export function PlannerForm() {
         </details>
 
         {!loading && (
-          <button type="submit" className="btn btn-accent w-full">
+          <button type="submit" className="btn btn-info w-full">
             Plan My Route
           </button>
         )}
