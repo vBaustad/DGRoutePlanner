@@ -34,14 +34,14 @@ return (
   >
     {/* Help */}
     <section className="order-1 md:col-span-1 lg:col-span-1 h-full min-h-0">
-      <div className="h-full rounded-lg bg-white shadow-sm border border-base-200">
+      <div className="h-full">
         <HelpSection />
       </div>
     </section>
 
     {/* Planner form */}
     <section className="order-2 md:col-span-1 lg:col-span-1 h-full min-h-0">
-      <div className="h-full rounded-lg bg-white shadow-sm border border-base-200">
+      <div className="h-full">
         <PlannerForm />
       </div>
     </section>

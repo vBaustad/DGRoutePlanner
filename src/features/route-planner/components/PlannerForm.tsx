@@ -97,10 +97,15 @@ export function PlannerForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="card bg-base-100 p-5 space-y-6 flex flex-col"
+      className="card bg-[#F9FAF5] border border-[#626F47]/20 p-5 space-y-6 flex flex-col h-full shadow-sm"
     >
-      <h2 className="text-xl font-bold flex items-center gap-2">
-        <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <h2 className="text-xl font-bold flex items-center gap-2 text-gray-900">
+        <svg
+          className="h-5 w-5 text-[#626F47]"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <circle cx="12" cy="12" r="10" />
           <circle cx="12" cy="12" r="6" />
           <circle cx="12" cy="12" r="2" />
@@ -121,7 +126,7 @@ export function PlannerForm() {
           <button
             type="button"
             onClick={handleStepAdd}
-            className="btn btn-primary mt-4 w-full"
+            className="btn mt-4 w-full bg-[#626F47] hover:bg-[#4E5839] text-white"
             disabled={!selectedPlace}
           >
             Add Start
@@ -141,13 +146,15 @@ export function PlannerForm() {
           <button
             type="button"
             onClick={handleStepAdd}
-            className="btn btn-primary mt-4 w-full"
+            className="btn mt-4 w-full bg-[#626F47] hover:bg-[#4E5839] text-white"
             disabled={!selectedPlace}
           >
             Add Destination
           </button>
           {input && !selectedPlace && (
-            <p className="text-sm text-warning mt-2">Please select a location from the dropdown</p>
+            <p className="text-sm text-amber-600 mt-2">
+              Please select a location from the dropdown
+            </p>
           )}
         </div>
       )}
@@ -162,9 +169,8 @@ export function PlannerForm() {
                 placeholder="Name your stop"
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
-                className="w-full h-[50px] rounded-[3px] border border-gray-300 bg-white
-                          text-[14px] leading-[24px] text-black
-                          placeholder:text-gray-500 pl-11 pr-3"
+                className="w-full h-[50px] rounded-md border border-[#626F47]/30 bg-white
+                          text-sm text-gray-900 placeholder:text-gray-500 pl-11 pr-3 focus:outline-none focus:ring-2 focus:ring-[#626F47]"
               />
               <Tag className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
             </div>
@@ -176,12 +182,12 @@ export function PlannerForm() {
             />
           </div>
 
-          <label className="flex items-center gap-2 mb-4">
+          <label className="flex items-center gap-2 mb-4 text-gray-700">
             <input
               type="checkbox"
               checked={isCourse}
               onChange={(e) => setIsCourse(e.target.checked)}
-              className="checkbox checkbox-sm rounded-[2px]"
+              className="checkbox checkbox-sm rounded-[2px] border-[#626F47]/50 checked:bg-[#626F47]"
             />
             <span className="text-sm">This is a disc golf course</span>
           </label>
@@ -189,7 +195,7 @@ export function PlannerForm() {
           <button
             type="button"
             onClick={handleStepAdd}
-            className="btn btn-primary w-full"
+            className="btn w-full bg-[#626F47] hover:bg-[#4E5839] text-white"
             disabled={!selectedPlace || !customName.trim()}
           >
             Add Stop
@@ -200,44 +206,50 @@ export function PlannerForm() {
       <div className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="form-control">
-            <label className="label label-text" htmlFor="tripDays">Trip Duration (Days)</label>
+            <label className="label label-text" htmlFor="tripDays">
+              Trip Duration (Days)
+            </label>
             <input
               id="tripDays"
               type="number"
               min={1}
               value={form.tripDays}
               onChange={handleNumberChange("tripDays")}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full border-[#626F47]/30 focus:ring-[#626F47]"
             />
           </div>
 
           <div className="form-control">
-            <label className="label label-text" htmlFor="coursesPerDay">Courses per Day</label>
+            <label className="label label-text" htmlFor="coursesPerDay">
+              Courses per Day
+            </label>
             <input
               id="coursesPerDay"
               type="number"
               min={1}
               value={form.coursesPerDay}
               onChange={handleNumberChange("coursesPerDay")}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full border-[#626F47]/30 focus:ring-[#626F47]"
             />
           </div>
         </div>
 
-        {/* Advanced toggle (hidden by default) */}
+        {/* Advanced toggle */}
         <details className="mt-1">
-          <summary className="cursor-pointer select-none text-sm link link-primary">
+          <summary className="cursor-pointer select-none text-sm text-[#626F47] hover:underline">
             Advanced options
           </summary>
           <div className="mt-3 form-control">
-            <label className="label label-text" htmlFor="maxDetourMinutes">Max Detour (Minutes)</label>
+            <label className="label label-text" htmlFor="maxDetourMinutes">
+              Max Detour (Minutes)
+            </label>
             <input
               id="maxDetourMinutes"
               type="number"
               min={0}
               value={form.maxDetourMinutes}
               onChange={handleNumberChange("maxDetourMinutes")}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full border-[#626F47]/30 focus:ring-[#626F47]"
             />
             <p className="mt-1 text-xs text-gray-500">
               Only suggest courses with one-way driving time from your route ≤ this value.
@@ -246,18 +258,29 @@ export function PlannerForm() {
         </details>
 
         {!loading && (
-          <button type="submit" className="btn btn-info w-full">
+          <button
+            type="submit"
+            className="btn w-full bg-[#626F47] hover:bg-[#4E5839] text-white"
+          >
             Plan My Route
           </button>
         )}
 
         {loading && (
-          <div className="rounded bg-base-200 p-2 text-sm" role="status" aria-live="polite">
-            <div className="font-medium">
+          <div
+            className="rounded bg-base-200 p-2 text-sm border border-[#626F47]/20"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="font-medium text-gray-900">
               {progress?.message ?? "Planning your adventure…"}
             </div>
             {typeof progress?.percent === "number" && (
-              <progress className="progress progress-primary w-full" value={progress.percent} max={100} />
+              <progress
+                className="progress w-full text-[#626F47]"
+                value={progress.percent}
+                max={100}
+              />
             )}
           </div>
         )}
