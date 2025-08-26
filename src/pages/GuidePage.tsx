@@ -206,7 +206,6 @@ export function GuidePage() {
                 <span className="ml-1">{primaryTag}</span>
               </span>
             )}
-
             {/* Category inline */}
             <span className="inline-block rounded-full bg-[#626F47]/10 text-[#3E462C] px-2 py-0.5 text-xs font-medium">
               {guide.category}

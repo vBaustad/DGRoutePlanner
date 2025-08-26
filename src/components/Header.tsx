@@ -35,10 +35,12 @@ export function Header() {
               <div className="text-xs text-base-content/70">
                 Plan your perfect disc golf adventure
               </div>
+
             </div>
           </Link>
 
           {/* Desktop nav */}
+
           <nav className="hidden sm:flex items-center gap-2">
             {nav.map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} className={linkClass}>

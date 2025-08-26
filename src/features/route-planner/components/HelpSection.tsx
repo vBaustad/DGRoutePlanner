@@ -126,7 +126,7 @@ export function HelpSection() {
           className=""
           width="100%"
           height={90}
-          responsive={false}
+
           test={isDev}
         />
       </div>
