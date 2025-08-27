@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, MapPin, HelpCircle, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, HelpCircle, ExternalLink, Coffee } from "lucide-react";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -7,7 +7,8 @@ export function Footer() {
 
   const socials = [
     { label: "GitHub Repo", href: "https://github.com/vBaustad/DGRoutePlanner", Icon: Github },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/vBaustad/", Icon: Linkedin },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/vBaustad/", Icon: Linkedin },    
+    { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/vbaustad", Icon: Coffee },
   ];
 
   const quickLinks = [
