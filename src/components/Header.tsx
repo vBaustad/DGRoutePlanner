@@ -4,6 +4,7 @@ import logoUrl from "../assets/images/DGRoutePlannerCropped.png";
 const nav = [
   { to: "/", label: "Home", end: true },
   { to: "/guides", label: "Guides" },
+  { to: "/faq", label: "FAQ" },
 ];
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
