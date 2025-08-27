@@ -17,7 +17,6 @@ export function Footer() {
     { label: "Contact", href: "mailto:vebjorn.baustad@gmail.com?subject=DG%20Route%20Planner" },
   ];
 
-  // Optional: basic JSON-LD. If you already add schema elsewhere, remove this.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
