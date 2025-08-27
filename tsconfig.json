@@ -5,6 +5,8 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["react"],
     "lib": ["DOM", "ESNext"]
   }
 }

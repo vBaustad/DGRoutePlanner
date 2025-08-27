@@ -6,6 +6,10 @@ import { Footer } from "../components/Footer";
 import { Header } from "../components/Header"; // <-- add this
 import GuidesIndex from "../pages/GuidesIndex";
 import { GuidePage } from "../pages/GuidePage";
+import FAQ from "../pages/FAQ";
+import Terms from "../pages/Terms";
+import Privacy from "../pages/Privacy";
+import { CookieConsent } from "../providers/analytics/CookieConsent";
 
 export default function App() {
   const isProd = import.meta.env.PROD;
@@ -31,6 +35,9 @@ export default function App() {
             <Route path="/" element={<RoutePlanner />} />
             <Route path="/guides" element={<GuidesIndex />} />
             <Route path="/guides/:slug" element={<GuidePage />} />
+            <Route path="/faq" element={<FAQ />}  />
+            <Route path="/terms" element={<Terms />}  />
+            <Route path="/privacy" element={<Privacy />}  />
           </Routes>
         </div>
 
@@ -42,6 +49,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <CookieConsent/>
     </div>
   );
 }

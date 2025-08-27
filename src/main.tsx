@@ -3,12 +3,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./app/App";
-import { PlannerProvider } from "./provider/PlannerProvider";
+import { PlannerProvider } from "./providers/PlannerProvider";
 import { LoadScriptNext } from "@react-google-maps/api";
-import { RoutePlannerProvider } from "./provider/RoutePlannerProvider";
-import { CourseDiscoveryProvider } from "./provider/CourseDiscoveryProvider";
+import { RoutePlannerProvider } from "./providers/RoutePlannerProvider";
+import { CourseDiscoveryProvider } from "./providers/CourseDiscoveryProvider";
 import { inject } from "@vercel/analytics";
 import { BrowserRouter } from "react-router-dom";
+import { AnalyticsProvider } from "./providers/analytics/AnalyticsProvider";
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 if (import.meta.env.PROD) {
@@ -34,7 +35,9 @@ createRoot(document.getElementById("root")!).render(
           <RoutePlannerProvider>
             <CourseDiscoveryProvider>
               <BrowserRouter>
-                <App />
+                <AnalyticsProvider>
+                  <App />
+                </AnalyticsProvider>
               </BrowserRouter>
             </CourseDiscoveryProvider>
           </RoutePlannerProvider>
